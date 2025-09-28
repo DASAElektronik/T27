@@ -1,4 +1,4 @@
-site_name: Ternary Computer (T27)
+ï»¿site_name: Ternary Computer (T27)
 site_url: https://dasaelektronik.github.io/T27/
 repo_url: https://github.com/DASAElektronik/T27
 repo_name: DASAElektronik/T27
@@ -31,7 +31,6 @@ nav:
       - Tooling & Versions: repro/tooling.md
       - Tests & CI: repro/tests-ci.md
   - Roadmap: roadmap.md
-  - Contact: contact.md
 
 markdown_extensions:
   - toc:
@@ -46,7 +45,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/DASAElektronik/T27
-      name: GitHub – DASAElektronik/T27
+      name: GitHub - DASAElektronik/T27
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/daniel-schuch-a710418b/
-      name: LinkedIn – Daniel Schuch
+      name: LinkedIn - Daniel Schuch

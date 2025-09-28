@@ -45,7 +45,5 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/DASAElektronik/T27
-      name: GitHub - DASAElektronik/T27
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/daniel-schuch-a710418b/
-      name: LinkedIn - Daniel Schuch

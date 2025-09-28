@@ -1,0 +1,43 @@
+site_name: Ternary Computer (T27)
+site_description: Open, patent-friendly ternary logic project
+site_url: https://<your-domain-or-github-pages>
+repo_url: https://github.com/<user-or-org>/<repo>
+repo_name: <user-or-org>/<repo>
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - content.code.copy
+    - toc.follow
+  logo: assets/logo.svg
+  favicon: assets/favicon.png
+nav:
+  - Home: index.md
+  - Guide:
+      - Quickstart: guide/quickstart.md
+      - Contributing: guide/contributing.md
+      - Licensing: guide/licensing.md
+      - Governance: guide/governance.md
+  - Design:
+      - Architecture: design/architecture.md
+      - Cells & Encoding: design/cells.md
+      - Non-Infringement Scope: design/ip-scope.md
+  - Reproducibility:
+      - Tooling & Versions: repro/tooling.md
+      - Tests & CI: repro/tests-ci.md
+  - Roadmap: roadmap.md
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/<user-or-org>/<repo>
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/<invite-or-remove>

@@ -1,0 +1,12 @@
+Ternary Computer — License Routing
+
+This repository uses a multi-license layout:
+
+• Code and HDL (e.g., /src, /hdl, /tools): Apache-2.0
+• Hardware design files (e.g., /hardware, /pcb, /mechanics): CERN-OHL-P-2.0
+• Documentation and media (e.g., /docs, /specs, /figures): CC-BY-4.0
+
+Files have SPDX headers to indicate their license. See SPDX-EXAMPLES.md for snippets.
+
+The full text of Apache-2.0 is included in LICENSE.
+Canonical references for CERN-OHL-P-2.0 and CC-BY-4.0 are included in LICENSES/.

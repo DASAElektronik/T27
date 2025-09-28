@@ -1,0 +1,15 @@
+SPDX-License-Identifier: CERN-OHL-P-2.0
+CERN Open Hardware Licence Version 2 - Permissive (OHL-P)
+
+This repository's hardware design files (e.g., /hardware, /pcb, /mechanics)
+are licensed under the CERN OHL v2-P (Permissive). The OHL-P is a permissive
+hardware license intended for open hardware designs.
+
+For the complete and authoritative license text, see:
+https://ohwr.org/cern_ohl_p_v2.txt
+
+Summary (non-authoritative):
+- You may copy, modify, manufacture, and distribute products based on the
+  licensed hardware design files.
+- Source (design files) must retain copyright and license notices.
+- No warranty is provided. This summary does not replace the full license.

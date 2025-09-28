@@ -1,0 +1,17 @@
+name: Basic hygiene
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  spdx-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run SPDX header check
+        run: |
+          python tools/validate_spdx.py

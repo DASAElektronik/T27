@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an idea for this project
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature!
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line description of the feature
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Motivation & details
+      description: What problem does it solve? Why is it valuable?
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Affected areas
+      options:
+        - label: HDL / core cells
+        - label: Hardware design files
+        - label: Tooling / scripts
+        - label: Documentation

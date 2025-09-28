@@ -13,8 +13,8 @@ theme:
     - search.suggest
     - search.highlight
     - header.autohide
-  logo: assets/logo.svg
-  favicon: assets/favicon.png
+  logo: assets/t27_logo.svg
+  favicon: assets/t27_favicon.png
 
 nav:
   - Home: index.md

@@ -1,42 +1,26 @@
 name: Bug report
-description: Create a report to help us improve
+description: Help us fix a problem
 labels: [bug]
 body:
-  - type: markdown
+  - type: textarea
+    id: what-happened
     attributes:
-      value: |
-        Thanks for taking the time to fill out a bug report!
+      label: What happened?
+      description: What did you expect vs. what happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue
+      placeholder: "1) …\n2) …\n3) …"
   - type: input
     id: version
     attributes:
       label: Version / Commit
-      description: The version or commit hash you are using
-      placeholder: e.g. v0.1.0 or abcdef1
   - type: textarea
-    id: expected
+    id: logs
     attributes:
-      label: Expected behavior
-    validations:
-      required: true
-  - type: textarea
-    id: actual
-    attributes:
-      label: Actual behavior
-    validations:
-      required: true
-  - type: textarea
-    id: reproduce
-    attributes:
-      label: Steps to reproduce
-      description: Provide a minimal example if possible
-      placeholder: |
-        1. ...
-        2. ...
-        3. ...
-    validations:
-      required: true
-  - type: textarea
-    id: env
-    attributes:
-      label: Environment
-      description: OS, tool versions, EDA versions, simulator, etc.
+      label: Logs / Screenshots
+      render: shell

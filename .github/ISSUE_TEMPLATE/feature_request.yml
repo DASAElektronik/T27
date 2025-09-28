@@ -1,31 +1,21 @@
 name: Feature request
-description: Suggest an idea for this project
+description: Suggest an idea or improvement
 labels: [enhancement]
 body:
-  - type: markdown
+  - type: textarea
+    id: motivation
     attributes:
-      value: |
-        Thanks for suggesting a feature!
-  - type: input
-    id: summary
-    attributes:
-      label: Summary
-      description: One-line description of the feature
+      label: Motivation
+      description: What problem does this solve?
     validations:
       required: true
   - type: textarea
-    id: details
+    id: proposal
     attributes:
-      label: Motivation & details
-      description: What problem does it solve? Why is it valuable?
-    validations:
-      required: true
-  - type: checkboxes
+      label: Proposal
+      description: What should happen? Any alternatives?
+  - type: textarea
     id: scope
     attributes:
-      label: Affected areas
-      options:
-        - label: HDL / core cells
-        - label: Hardware design files
-        - label: Tooling / scripts
-        - label: Documentation
+      label: Out of scope
+      description: What explicitly won't be covered?

@@ -1,0 +1,11 @@
+/**
+ * \file
+ * \ingroup long_div
+ * \brief Balanced‑ternary long division (reference implementation).
+ * \details Computes (q,r) with truncation‑toward‑zero semantics.
+ *          Invariants and termination are sketched in \ref proof_long_div.md.
+ * \pre  b != 0
+ * \post a == q*b + r,  sign(r) ∈ {0, sign(a)} ∪ {0},  |r| < |b|
+ * \callgraph
+ * \callergraph
+ */

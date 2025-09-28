@@ -21,33 +21,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - run: pip install mkdocs mkdocs-material
-
-      - name: Diagnose mkdocs.yml
-        run: |
-          ls -l mkdocs.yml || true
-          python - <<'PY'
-          p='mkdocs.yml'
-          b=open(p,'rb').read()
-          print('bytes:', len(b))
-          idx = next((i for i,x in enumerate(b) if x >= 128), None)
-          print('first_non_ascii:', idx)
-          if idx is not None:
-              print('byte_hex:', hex(b[idx]))
-          PY
-
-      - name: Sanitize mkdocs.yml (CP1252 -> ASCII)
-        run: |
-          python - <<'PY'
-          p='mkdocs.yml'
-          b=open(p,'rb').read()
-          trans = {0x96:0x2D,0x97:0x2D,0x93:0x22,0x94:0x22,0x91:0x27,0x92:0x27,0xA0:0x20}
-          b2 = bytes(trans.get(x,x) for x in b)
-          open(p,'wb').write(b2)
-          PY
-
-      - run: mkdocs build -f mkdocs.yml --site-dir site
-
+          cache: 'pip'
+      - run: pip install -r docs/requirements.txt || pip install mkdocs mkdocs-material
+      - run: mkdocs build --strict --site-dir site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

@@ -40,6 +40,8 @@ nav:
       - Architecture: design/architecture.md
       - Cells & Encoding: design/cells.md
       - Non-Infringement Scope: design/ip-scope.md
+      - Long Division Algorithm: design/alg-long-div.md
+      - Proof (Long Division): design/proof_long_div.md
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
       - Tests & CI: repro/tests-ci.md

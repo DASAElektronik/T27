@@ -1,4 +1,4 @@
-﻿site_name: Ternary Computer (T27)
+site_name: Ternary Computer (T27)
 site_url: https://dasaelektronik.github.io/T27/
 repo_url: https://github.com/DASAElektronik/T27
 repo_name: DASAElektronik/T27
@@ -15,6 +15,19 @@ theme:
     - header.autohide
   logo: assets/t27_logo.svg
   favicon: assets/t27_favicon.png
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/white-balance-sunny
+        name: Switch to light mode
 
 nav:
   - Home: index.md
@@ -47,3 +60,6 @@ extra:
       link: https://github.com/DASAElektronik/T27
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/daniel-schuch-a710418b/
+    - icon: fontawesome/brands/github
+      link: https://github.com/DASAElektronik/T27/discussions
+      name: GitHub Discussions

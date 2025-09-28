@@ -5,7 +5,7 @@ Thanks for helping T27!
 - **Workflow:** fork → feature branch → pull request.
 - **Commits:** keep them small and focused. Example prefixes: `feat:`, `fix:`, `docs:`, `chore:`.
 - **PRs:** describe what changed and how you tested it.
-- **Code of Conduct:** see [`CODE_OF_CONDUCT.md`](../../CODE_OF_CONDUCT.md).
+- **Code of Conduct:** see the [Code of Conduct on GitHub](https://github.com/DASAElektronik/T27/blob/master/CODE_OF_CONDUCT.md).
 - **Licensing:** contributions are accepted under the repo's license routing (see [Licensing](licensing.md)).
 
 ## Dev setup

@@ -1,17 +1,21 @@
 site_name: Ternary Computer (T27)
-site_description: Open, patent-friendly ternary logic project
-site_url: https://<your-domain-or-github-pages>
-repo_url: https://github.com/<user-or-org>/<repo>
-repo_name: <user-or-org>/<repo>
+site_url: https://dasaelektronik.github.io/T27/
+repo_url: https://github.com/DASAElektronik/T27
+repo_name: DASAElektronik/T27
+edit_uri: edit/master/docs/
+
 theme:
   name: material
   features:
-    - navigation.instant
+    - navigation.sections
     - navigation.tracking
     - content.code.copy
-    - toc.follow
+    - search.suggest
+    - search.highlight
+    - header.autohide
   logo: assets/logo.svg
   favicon: assets/favicon.png
+
 nav:
   - Home: index.md
   - Guide:
@@ -27,6 +31,8 @@ nav:
       - Tooling & Versions: repro/tooling.md
       - Tests & CI: repro/tests-ci.md
   - Roadmap: roadmap.md
+  - Contact: contact.md
+
 markdown_extensions:
   - toc:
       permalink: true
@@ -35,9 +41,12 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.superfences
   - attr_list
+
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/<user-or-org>/<repo>
-    - icon: fontawesome/brands/discord
-      link: https://discord.gg/<invite-or-remove>
+      link: https://github.com/DASAElektronik/T27
+      name: GitHub – DASAElektronik/T27
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/daniel-schuch-a710418b/
+      name: LinkedIn – Daniel Schuch

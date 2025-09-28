@@ -12,3 +12,4 @@
     - Read the [Quickstart](guide/quickstart.md)
     - Check the [Roadmap](roadmap.md)
     - Join the discussion via GitHub Discussions
+    [![Follow on LinkedIn](https://img.shields.io/badge/LinkedIn-Follow-blue?logo=linkedin)](https://www.linkedin.com/in/daniel-schuch-a710418b/)

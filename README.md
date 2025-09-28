@@ -1,4 +1,10 @@
 [![docs](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml/badge.svg)](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml)
+
+[![docs](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml/badge.svg?branch=master)](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml)
+
+[![docs site](https://img.shields.io/website?down_message=offline&label=docs&up_message=online&url=https%3A%2F%2Fdasaelektronik.github.io%2FT27%2F)](https://dasaelektronik.github.io/T27/)
+
+
 # Ternary Computer (T27) — Community Edition
 
 > **Kurzfassung (DE):** Freies, patent-unbelastetes Projekt für Ternärlogik (−1/0/+1 oder 0/1/2). 

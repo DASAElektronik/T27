@@ -1,3 +1,4 @@
+[![docs](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml/badge.svg)](https://github.com/DASAElektronik/T27/actions/workflows/docs.yml)
 # Ternary Computer (T27) — Community Edition
 
 > **Kurzfassung (DE):** Freies, patent-unbelastetes Projekt für Ternärlogik (−1/0/+1 oder 0/1/2). 

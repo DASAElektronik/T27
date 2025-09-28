@@ -1,7 +1,15 @@
 # Tooling & Versions
 
-Document your tool versions here (simulators, synthesizers, PCB tools).
+To keep results reproducible, record exact versions here.
 
-- Verilator / Yosys / nextpnr versions
-- Vendor tool versions if applicable
-- Python/Node versions for generators
+## Suggested baseline
+- Windows 11 (build X)
+- Visual Studio 2022 17.xx
+- CMake (if used), v3.xx
+- Python 3.11+ (for docs)
+
+## Docs build
+```bash
+pip install -r docs/requirements.txt
+mkdocs build --strict
+```

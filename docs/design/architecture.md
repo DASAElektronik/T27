@@ -1,5 +1,10 @@
 # Architecture
 
-- Balanced ternary (−1/0/+1) or unbalanced (0/1/2), chosen per sub-design.
-- Level generation: resistor ladder + window comparator (reference approach).
-- Digital dual-line encoding as an alternative for FPGA-based flows.
+High-level structure of T27:
+
+- **Encoding:** balanced ternary (−1, 0, +1), see [Cells & Encoding](cells.md)
+- **Building blocks:** adders, encoders/decoders, comparators, registers
+- **Reference implementations:** HDL and software models
+- **Interfaces:** simple bus for demos; adapters to common digital tools
+
+> This is a living document. Add diagrams as they emerge.

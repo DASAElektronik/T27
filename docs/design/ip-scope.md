@@ -1,4 +1,10 @@
-# Non-Infringement Scope
+# Non-Infringement Scope (draft)
 
-We intentionally avoid third-party +1/−1 base-cell topologies with specific preprocessing
-and multi-threshold transistor groups; see `SCOPE-NON-INFRINGMENT-NOTE.md` in the repo.
+Goal: **Avoid known third-party patents** while advancing ternary computing.
+
+- Prefer **prior art** and **public domain** methods
+- Keep implementations **simple** and **well-documented**
+- Track external references in `docs/` and cite them clearly
+- Patent **non-assert pledge** is included in this project
+
+If in doubt, open a Discussion issue before implementing.

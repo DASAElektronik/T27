@@ -1,6 +1,16 @@
 # Cells & Encoding
 
-- Core cells: INV3, MUX3, FA3 (full adder), CLAMP, DEC/ENC.
-- Encoding options: analog levels (ladder + window comparator) or time-domain (PW/delay).
+## Balanced ternary
+Values: −1, 0, +1 (often written as `-`, `0`, `+`).
 
-> Implementation details will evolve; see repo `/hdl` for current RTL.
+## Possible physical encodings
+- **Voltage levels** or **current levels**
+- **Tristate logic** with guard bands
+- **Symbolic / software** encoding for simulation
+
+## Standard cells (draft)
+- Inverter / buffer (tri)
+- Half/Full adder (tri)
+- Comparator / decoder (tri)
+
+Contributions welcome — measurements and references appreciated.

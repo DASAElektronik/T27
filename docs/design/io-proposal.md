@@ -1,7 +1,11 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Minimal deterministic I/O proposal
 
-Status: design proposal only. ISA v0.1 still has no I/O instructions, device
+Historical proposal, now resolved by [ISA v0.2](isa-v0.2.md).
+The text below preserves the original design questions and is not the current
+execution contract.
+
+Original status: design proposal only. ISA v0.1 still has no I/O instructions, device
 addresses, interrupts or host system calls. Reserved opcodes remain reserved.
 The first use case is a replayable integer stream, followed by an explicitly
 specified text adapter. The existing arithmetic/stack contract remains the base.

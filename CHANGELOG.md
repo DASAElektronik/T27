@@ -6,6 +6,8 @@
 - Add IN/OUT word streams, separate EOF status, bounded queues, precise resumable
   waits and explicit CPU/I/O reset ownership. Extend independent differential
   testing with queue state and deterministic host schedules.
+- Add a bounded decimal-file CLI adapter, echo/sum programs, replay fixtures and
+  recorded differential results.
 
 ## Experimental ISA v0.1 - unreleased
 

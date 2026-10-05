@@ -79,6 +79,9 @@ The independent Python integer model also implements queues, host actions and
 wait rollback; the differential harness compares every queue word, closure flag,
 capacity, host return value and CPU state after each scheduled operation.
 
+The [assembler guide](../guide/assembler.md) covers the finite-file CLI adapter
+and echo/sum examples.
+
 Trace protocol version 2 adds initial I/O configuration and tagged host actions:
 run, feed, close, drain, CPU reset and I/O reset. JSONL includes the complete case
 before its snapshots, with action and optional instruction budget. A host action

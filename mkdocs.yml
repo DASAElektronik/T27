@@ -60,6 +60,7 @@ nav:
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
       - CPU differential oracle: repro/cpu-oracle.md
+      - I/O validation: repro/io-validation.md
       - CPU investigation: repro/cpu-investigation.md
       - Tests & CI: repro/tests-ci.md
       - Project review: repro/review-2026-10-05.md

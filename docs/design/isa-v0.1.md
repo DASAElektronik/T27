@@ -153,7 +153,7 @@ and check both stack-fault exit paths. Existing v0 programs remain regression te
 
 An [independent Python oracle](../repro/cpu-oracle.md) additionally compares
 complete CPU states and memory for directed and generated programs.
-The expanded build has twelve CTest groups and fifteen isolated header checks
+The current expanded build (including v0.2 I/O) has thirteen CTest groups and fifteen isolated header checks
 when Python and the experimental CPU are enabled. Linux/Windows Debug/Release,
 sanitizers, coverage and CodeQL continue to include the experimental module.
 

@@ -6,6 +6,7 @@ words used by the [ISA v0 emulator](../design/isa-v0.md). `t27_run` assembles a
 file and executes it from address zero. No separate assembler installation is needed.
 The [ISA v0.1 extension](../design/isa-v0.1.md) adds CALL/CALLR, RET, PUSH/POP
 and JMPR, with recursive and indirect-call examples.
+[ISA v0.2](../design/isa-v0.2.md) adds bounded integer-stream IN/OUT with explicit EOF.
 Both tools remain part of the optional CPU module, outside the installed core API.
 
 ## Build and try it
@@ -57,6 +58,8 @@ emits exactly one word, without implicit padding or a trailing HALT.
 | `JMP loop` | Branch to a label |
 | `JZ R0, done`, `JNZ R0, loop` | Branch on a register value |
 | `JMP -1` | Numeric operands are relative displacements; here, branch to itself |
+| `IN R0, R1, 0` | Read endpoint 0; R1 = 1 for data, 0 for EOF; R0 and R1 must differ |
+| `OUT R0, 0` | Write R0 to endpoint 0 |
 | `.word -3812798742493` | Emit one signed 27-trit data word |
 
 For label branches, the assembler computes `label_address - (instruction_address + 1)`.
@@ -109,11 +112,38 @@ self-modifying code this line refers to the original source, not the stored repl
 | 2 | Invalid arguments, input/I/O error or assembly failure |
 | 3 | Emulated machine fault |
 | 4 | Instruction budget exhausted |
+| 5 | I/O wait (output capacity reached in this finite-input runner) |
 
 Example error: `bad.t27:1:4: expected register R0 through R8` for `LI R9, 1`.
 A budget stop reports the current state, so an infinite loop does not hang the
 runner indefinitely under its default budget. The runner does not save a resumable
 process image; the C++ Machine API supports resuming execution in memory.
+
+## Finite integer-stream input and output
+
+```sh
+./build-cpu/t27_run experimental/cpu/programs/io-echo.t27 --input experimental/cpu/programs/io-input.txt
+./build-cpu/t27_run experimental/cpu/programs/io-sum.t27 --input experimental/cpu/programs/io-input.txt --output-limit 16
+```
+
+The sample input is `-7 0 3 12`; echo emits all four words and sum emits 8.
+`--input FILE` accepts ASCII whitespace-separated signed decimal words, optional
+leading `+` or `-`, LF/CRLF, and no comments or BOM. Zero is data. Input is capped
+at 1 MiB and 65,536 words, each in the signed 27-trit range. The complete file is
+validated before the guest starts. Missing `--input` means an empty closed stream.
+A whitespace-only file is valid. All buffered words are delivered before EOF.
+
+`--output-limit N` sets output capacity, default 4,096, maximum 1,048,576; N must
+be positive. Each option may appear once after the program path. This runner
+executes once with the chosen budget; it does not interactively refill input or
+automatically drain output. Output-full returns exit 5, preserving pending output
+in the printed snapshot. Use the C++ host API to drain and resume in memory.
+
+Output includes `input_remaining`, `input_closed`, `output_count` and one
+`OUT[index]=signed_decimal` line per emitted word. It also prints partial output
+on budget, fault or wait stops. Check the exit code before treating output as a
+completed calculation. No guest instruction opens files or talks to the terminal;
+the command-line adapter maps validated host text to logical ternary words.
 
 ## C++ interface and validation
 
@@ -127,9 +157,9 @@ the command-line runner rejects an empty image.
 CTest adds `t27.assembler` for instruction forms, label resolution, numeric
 boundaries and diagnostics, and `t27.assembler_cli` for real files, example outcomes,
 faults, budgets and exit codes. The CLI test requires Python 3.9+.
-The experimental build now has twelve test groups and fifteen isolated header checks
+The experimental build now has thirteen test groups and fifteen isolated header checks
 when Python is available. The six core test groups remain unchanged. `t27.calls` tests the call/stack extension.
 
 Indirect calls and a minimal calling convention are implemented in v0.1.
-There is no serialized executable/object format, linker, boot service or device I/O
-yet. Assembler syntax and the ISA remain experimental.
+Word-stream I/O is implemented in v0.2. There is no serialized executable/object
+format, linker, boot service or hardware device map yet. Assembler syntax and the ISA remain experimental.

@@ -147,7 +147,8 @@ def io_corpus(seed,count):
 def self_check():
     # Hand-calculated independent witnesses validate the oracle before trusting comparisons.
     for instruction,value in [((2,0,0,0,5),98309),((3,8,0,0,0),-861),
-                              ((4,4,8,0,0),-7772),((-1,0,0,0,5),98414),((-4,8,0,0,0),104)]:
+                              ((4,4,8,0,0),-7772),((-1,0,0,0,5),98414),((-4,8,0,0,0),104),
+                              ((-7,0,1,0,0),-844),((-8,0,8,0,0),964)]:
         require(encode(*instruction)==value,'reference encoding vector')
         require(decode(value)==instruction,'reference decoding vector')
     m=Model(case('self',[encode(6,d=0,a=1,b=2),encode(1)],[0,LIMIT,2,0,0,0,0,0,0]))
@@ -157,6 +158,15 @@ def self_check():
     m=Model(case('self',[encode(-3,a=0),encode(-2)],[-1]+[0]*8))
     m.run(1); before=m.state(); after=m.run(1)
     require(after['fault']=='branch_address' and after['sp']==before['sp'] and after['memory']==before['memory'],'reference atomic return')
+
+    c=case('self-io',[encode(-7,d=0,a=1),encode(-8,a=0),encode(1)],[17,-1]+[0]*7)
+    m=Model(c)
+    require(m.run(1)['reason']=='input_wait' and m.pc==0 and m.registers[:2]==[17,-1], 'reference input wait')
+    m.apply(dict(op='close'))
+    state=m.run(1)
+    require(state['retired']==1 and state['registers'][:2]==[17,0], 'reference EOF preserves data')
+    m.run(1)
+    require(m.io['output']==[17], 'reference output')
 
 def actions(c):
     return c.get('actions', [dict(op='run',budget=n) for n in c['budgets']])

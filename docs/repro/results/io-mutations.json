@@ -1,0 +1,68 @@
+[
+  {
+    "mutation": "input-not-consumed",
+    "replace_from": "io_.input.erase(io_.input.begin());",
+    "replace_to": "// deliberately omit consumption",
+    "detected": true,
+    "case": "io-directed-0",
+    "step": 5,
+    "differing_fields": [
+      "io"
+    ]
+  },
+  {
+    "mutation": "eof-clobbers-data",
+    "replace_from": "next.registers[i.rs1] = num::Tword27{}; // EOF: data destination unchanged.",
+    "replace_to": "next.registers[i.rs1] = num::Tword27{}; next.registers[i.rd] = num::Tword27{};",
+    "detected": true,
+    "case": "io-directed-1",
+    "step": 14,
+    "differing_fields": [
+      "registers"
+    ]
+  },
+  {
+    "mutation": "wait-advances-pc",
+    "replace_from": "return Stop::input_wait;",
+    "replace_to": "{ ++state_.pc; return Stop::input_wait; }",
+    "detected": true,
+    "case": "opcode--7",
+    "step": 2,
+    "differing_fields": [
+      "pc"
+    ]
+  },
+  {
+    "mutation": "pop-clobbers-flags",
+    "replace_from": "next.registers[i.rd] = value; // Restore without changing arithmetic flags.",
+    "replace_to": "write(value);",
+    "detected": true,
+    "case": "opcode--4",
+    "step": 3,
+    "differing_fields": [
+      "flags"
+    ]
+  },
+  {
+    "mutation": "call-saves-wrong-return",
+    "replace_from": "num::to_bt(static_cast<std::int64_t>(next.pc))",
+    "replace_to": "num::to_bt(static_cast<std::int64_t>(state_.pc))",
+    "detected": true,
+    "case": "opcode--1",
+    "step": 2,
+    "differing_fields": [
+      "memory"
+    ]
+  },
+  {
+    "mutation": "fault-advances-pc",
+    "replace_from": "state_.fault = fault;",
+    "replace_to": "state_.fault = fault; ++state_.pc;",
+    "detected": true,
+    "case": "arith-7--3812798742493-0-1",
+    "step": 1,
+    "differing_fields": [
+      "pc"
+    ]
+  }
+]

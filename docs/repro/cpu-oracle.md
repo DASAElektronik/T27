@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Independent CPU differential tests
 
-The experimental ISA v0.1 emulator is checked against a separate Python integer
+The experimental ISA v0.2 emulator is checked against a separate Python integer
 model in `experimental/cpu/tests/cpu_reference.py`. That model imports no C++
 code, assembler, arithmetic or conversion routines. It decodes balanced fields
 with integer modular arithmetic, uses arbitrary-precision products and performs
@@ -33,13 +33,14 @@ python experimental/cpu/tests/cpu_oracle.py build-cpu/t27_cpu_trace_bridge --see
 ```
 
 Visual Studio places the bridge at `build-cpu/Debug/t27_cpu_trace_bridge.exe`.
-Python 3.9+ is required. The default seed is 270101 and the default adds 1,000
-random cases to a fixed directed corpus. The CTest timeout is 180 seconds and
+Python 3.9+ is required. The default seed is 270101 and the default adds 1,000 random instruction programs and 1,000 randomized I/O host
+schedules to 1,651 directed cases. `--random-cases N` chooses N cases per family
+(maximum 10,000 each). The CTest timeout is 180 seconds and
 the bridge subprocess timeout defaults to 120 seconds. A corpus SHA-256 records
 the exact numeric bridge input for reproducibility; preserve it with the seed,
 source commit and Python version.
 
-Directed cases cover all twenty instructions, all seven architectural faults,
+Directed cases cover all twenty-two instructions, all eight architectural faults,
 both outcomes of JZ/JNZ, arithmetic sign/overflow boundaries and register aliasing,
 nonzero unused instruction fields, self-modifying code, corrupt returns and
 recursion with sufficient/insufficient stack space. Random cases mix arbitrary
@@ -51,8 +52,9 @@ observed faults; they are not source branch coverage or proof of exhaustive inpu
 Hand-calculated encoding and arithmetic vectors validate the reference model
 before the differential pass. Existing assembler and raw invalid-trit tests remain
 separate: this numeric protocol represents only valid trit digits and does not
-exercise malformed host API arguments, host reset/reconfiguration sequences,
-allocation failures or concurrent access.
+exercise malformed host API arguments, host stack reconfiguration sequences,
+allocation failures or concurrent access. Host CPU/I/O reset and queue lifecycle
+sequences are now included, but stack reconfiguration remains covered separately.
 
 ## Failure replay and architectural traces
 
@@ -68,12 +70,18 @@ python experimental/cpu/tests/cpu_oracle.py build-cpu/t27_cpu_trace_bridge --rep
 separately and do not fabricate a state mismatch. `--trace PATH` writes verified
 JSON Lines with one `input` record containing the complete case (including stack
 bounds) before that case’s snapshots. Snapshots contain case name, step index and
-budget, useful for a future
-RTL comparison. Only snapshots with budget 1 represent single-instruction
-transitions; budget 0 changes no state, and larger budgets aggregate execution.
+action and budget, useful for a future RTL comparison. A run with budget 1
+represents one instruction attempt (possibly a wait or fault with no retirement); budget 0 changes no state, and larger budgets aggregate execution.
 The initial snapshot has a null budget. Integer words are signed logical ternary
 values; this trace defines neither physical trit encoding nor cycle timing.
 
-The optional CPU now adds six groups to the six core CTest groups (twelve total),
+Protocol version 2 adds I/O queues, capacities, closed/open input, host return
+values and tagged actions (run/feed/close/drain/reset/reset_io) to the comparison.
+Trace input records carry `protocol_version: 2`. CPU-only fixtures without I/O
+fields default to empty open queues with capacities 256. Historical v0.1 trace
+outputs and corpus hashes belong to their recorded source revision; rerunning
+inputs with this revision deliberately produces version 2 outputs.
+
+The optional CPU now adds seven groups to the six core CTest groups (thirteen total),
 with fifteen isolated header checks. CI, sanitizers and coverage include this
 oracle. The installed integer library remains unchanged.

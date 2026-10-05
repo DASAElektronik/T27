@@ -1,0 +1,35 @@
+[
+  {
+    "mutation": "pop-clobbers-flags",
+    "replace_from": "next.registers[i.rd] = value; // Restore without changing arithmetic flags.",
+    "replace_to": "write(value);",
+    "detected": true,
+    "case": "opcode--4",
+    "step": 3,
+    "differing_fields": [
+      "flags"
+    ]
+  },
+  {
+    "mutation": "call-saves-wrong-return",
+    "replace_from": "num::to_bt(static_cast<std::int64_t>(next.pc))",
+    "replace_to": "num::to_bt(static_cast<std::int64_t>(state_.pc))",
+    "detected": true,
+    "case": "opcode--1",
+    "step": 2,
+    "differing_fields": [
+      "memory"
+    ]
+  },
+  {
+    "mutation": "fault-advances-pc",
+    "replace_from": "state_.fault = fault;",
+    "replace_to": "state_.fault = fault; ++state_.pc;",
+    "detected": true,
+    "case": "arith-7--3812798742493-0-1",
+    "step": 1,
+    "differing_fields": [
+      "pc"
+    ]
+  }
+]

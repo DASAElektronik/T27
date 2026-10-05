@@ -45,6 +45,7 @@ nav:
       - Architecture: design/architecture.md
       - ISA v0.1 calls and stack: design/isa-v0.1.md
       - Experimental ISA v0: design/isa-v0.md
+      - I/O proposal: design/io-proposal.md
       - Numeric contract: design/numeric-contract.md
       - Cells & Encoding: design/cells.md
       - Non-Infringement Scope: design/ip-scope.md
@@ -58,6 +59,7 @@ nav:
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
       - CPU differential oracle: repro/cpu-oracle.md
+      - CPU investigation: repro/cpu-investigation.md
       - Tests & CI: repro/tests-ci.md
       - Project review: repro/review-2026-10-05.md
   - Roadmap: roadmap.md

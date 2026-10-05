@@ -128,6 +128,8 @@ def compare(bridge,cases,timeout,failure,trace=None):
         output.seek(0)
         for c in cases:
             model=Model(c)
+            if trace:
+                trace.write(json.dumps(dict(case=c['name'],input=c))+'\n')
             for step,budget in enumerate([None]+c['budgets']):
                 expected=model.state() if budget is None else model.run(budget)
                 line=output.readline()

@@ -66,7 +66,9 @@ python experimental/cpu/tests/cpu_oracle.py build-cpu/t27_cpu_trace_bridge --rep
 
 `--failure PATH` chooses the failure file. Input/process failures are reported
 separately and do not fabricate a state mismatch. `--trace PATH` writes verified
-JSON Lines snapshots, with case name, step index and budget, useful for a future
+JSON Lines with one `input` record containing the complete case (including stack
+bounds) before that case’s snapshots. Snapshots contain case name, step index and
+budget, useful for a future
 RTL comparison. Only snapshots with budget 1 represent single-instruction
 transitions; budget 0 changes no state, and larger budgets aggregate execution.
 The initial snapshot has a null budget. Integer words are signed logical ternary

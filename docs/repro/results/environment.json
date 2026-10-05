@@ -1,0 +1,9 @@
+{
+  "source_base": "c93e218a270b83af3b69ff84e4c8dbc000e8b42e",
+  "python": "3.12.14",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "build": "Release, GCC -O3 -DNDEBUG, no sanitizers",
+  "benchmark": "2000 reset/run/validate iterations per sample, 20 warmups, 5 samples, assembly and allocation excluded; shared virtualized host"
+}

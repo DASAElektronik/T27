@@ -3,6 +3,8 @@
 
 ## Experimental ISA v0.1 - unreleased
 
+- Add a checked CPU runtime benchmark, replay fixtures, mutation-sensitivity
+  experiments and a documented ISA/ABI and I/O investigation.
 - Add an independent Python CPU oracle, deterministic generated programs, full
   architectural snapshots and replayable differential failures.
 

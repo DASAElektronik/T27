@@ -12,7 +12,7 @@ fuzz smoke has 1,001 deterministic inputs. Twelve public headers compile alone.
 | Sanitizers | Actual ASan/UBSan instrumentation and CTest |
 | Coverage | Instrumented gcov build, tests and generated lcov report |
 | Fuzz | Clang libFuzzer for a fixed time budget; invariant failures fail the job |
-| Format | clang-format 18 on compiled C++ sources |
+| Format | clang-format 18.1.8 on compiled C++ sources |
 | docs | Strict MkDocs + Doxygen; PR preview artifact, deploy only from main |
 | Release | Matching version/tag, tests before packaging, draft release |
 

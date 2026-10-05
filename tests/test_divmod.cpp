@@ -6,11 +6,20 @@
 #include <cstdlib>
 #include <iostream>
 #include <random>
+#include <string>
 
 using namespace t27::num;
 
 static int getenv_i(const char *k, int defv) {
+#ifdef _MSC_VER
+  char storage[64]{};
+  std::size_t length = 0;
+  if (getenv_s(&length, storage, sizeof(storage), k) != 0)
+    return defv;
+  const char *v = storage;
+#else
   const char *v = std::getenv(k);
+#endif
   if (!v || !*v)
     return defv;
   try {

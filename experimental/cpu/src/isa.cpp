@@ -11,6 +11,10 @@ constexpr unsigned rd_mask = 1, rs1_mask = 2, rs2_mask = 4, imm_mask = 8;
 constexpr std::array<unsigned, 14> fields{0, 0, 9, 3, 7, 7, 7, 7, 7, 11, 14, 8, 10, 10};
 unsigned mask(Opcode op) {
   switch (op) {
+  case Opcode::input:
+    return rd_mask | rs1_mask | imm_mask;
+  case Opcode::output:
+    return rs1_mask | imm_mask;
   case Opcode::call:
     return imm_mask;
   case Opcode::ret:
@@ -26,7 +30,7 @@ unsigned mask(Opcode op) {
   }
   const auto code = static_cast<int>(op);
   if (code < 0 || code >= static_cast<int>(fields.size()))
-    throw std::invalid_argument("reserved ISA v0.1 opcode");
+    throw std::invalid_argument("reserved ISA v0.2 opcode");
   return fields[static_cast<std::size_t>(code)];
 }
 void write_field(num::Tword27 &word, std::size_t start, std::int64_t value) {
@@ -38,6 +42,8 @@ void write_field(num::Tword27 &word, std::size_t start, std::int64_t value) {
 
 num::Tword27 encode(const Instruction &i) {
   const auto used = mask(i.opcode);
+  if (i.opcode == Opcode::input && i.rd == i.rs1)
+    throw std::invalid_argument("IN data and status registers must differ");
   for (const auto &[bit, index] : std::array<std::pair<unsigned, std::size_t>, 3>{
            {{rd_mask, i.rd}, {rs1_mask, i.rs1}, {rs2_mask, i.rs2}}}) {
     if (((used & bit) && index >= register_count) || (!(used & bit) && index != 0))

@@ -14,9 +14,17 @@ enum class Fault {
   data_address,
   branch_address,
   stack_overflow,
-  stack_underflow
+  stack_underflow,
+  io_endpoint
 };
-enum class Stop { running, halted, fault, step_limit };
+enum class Stop { running, halted, fault, step_limit, input_wait, output_wait };
+struct IoConfig {
+  std::size_t input_capacity{256}, output_capacity{256};
+};
+struct IoState {
+  std::vector<num::Tword27> input, output;
+  bool input_closed{false};
+};
 struct Flags {
   num::Trit sign{num::Trit::Z};
   bool overflow{false}, inexact{false};
@@ -42,7 +50,22 @@ struct RunResult {
 /// Deterministic, instruction-level model; not a cycle-accurate or physical CPU.
 class Machine {
 public:
-  explicit Machine(std::span<const num::Tword27> image, std::size_t memory_words = 256);
+  explicit Machine(std::span<const num::Tword27> image, std::size_t memory_words = 256,
+                   IoConfig io = {});
+  const IoState &io() const noexcept {
+    return io_;
+  }
+  IoConfig io_config() const noexcept {
+    return io_config_;
+  }
+  // Validate all words, then accept the complete batch or return false without changes.
+  bool feed_input(std::span<const num::Tword27> words);
+  void close_input() noexcept {
+    io_.input_closed = true;
+  }
+  std::vector<num::Tword27> drain_output();
+  // Empties queues and reopens input. CPU reset deliberately leaves I/O untouched.
+  void reset_io() noexcept;
   const State &state() const noexcept {
     return state_;
   }
@@ -65,5 +88,7 @@ private:
   State state_{};
   StackRegion stack_{};
   std::vector<num::Tword27> memory_;
+  IoConfig io_config_;
+  IoState io_;
 };
 } // namespace t27::experimental

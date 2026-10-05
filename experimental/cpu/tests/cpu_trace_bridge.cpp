@@ -44,6 +44,10 @@ std::int64_t value(const t27::num::Tword27 &w) {
 }
 const char *reason(Stop s) {
   switch (s) {
+  case Stop::input_wait:
+    return "input_wait";
+  case Stop::output_wait:
+    return "output_wait";
   case Stop::running:
     return "running";
   case Stop::halted:
@@ -57,6 +61,8 @@ const char *reason(Stop s) {
 }
 const char *fault(Fault f) {
   switch (f) {
+  case Fault::io_endpoint:
+    return "io_endpoint";
   case Fault::none:
     return "none";
   case Fault::fetch_address:
@@ -76,7 +82,16 @@ const char *fault(Fault f) {
   }
   throw std::runtime_error("unknown fault");
 }
-void snapshot(const Machine &m, RunResult r) {
+void values(std::span<const t27::num::Tword27> words) {
+  std::cout << '[';
+  for (std::size_t n = 0; n < words.size(); ++n) {
+    if (n)
+      std::cout << ',';
+    std::cout << value(words[n]);
+  }
+  std::cout << ']';
+}
+void snapshot(const Machine &m, RunResult r, std::span<const t27::num::Tword27> host = {}) {
   const auto &s = m.state();
   std::cout << "{\"reason\":\"" << reason(r.reason) << "\",\"retired\":" << r.retired
             << ",\"pc\":" << s.pc << ",\"sp\":" << s.sp
@@ -95,7 +110,15 @@ void snapshot(const Machine &m, RunResult r) {
       std::cout << ',';
     std::cout << value(m.memory()[i]);
   }
-  std::cout << "]}\n";
+  std::cout << "],\"io\":{\"input\":";
+  values(m.io().input);
+  std::cout << ",\"output\":";
+  values(m.io().output);
+  std::cout << ",\"closed\":" << (m.io().input_closed ? "true" : "false")
+            << ",\"input_capacity\":" << m.io_config().input_capacity
+            << ",\"output_capacity\":" << m.io_config().output_capacity << "},\"host_result\":";
+  values(host);
+  std::cout << "}\n";
 }
 } // namespace
 int main() {
@@ -112,14 +135,48 @@ int main() {
       std::vector<t27::num::Tword27> image(image_size);
       for (auto &w : image)
         w = read_word();
-      Machine m(image, size);
+      const auto input_capacity = bounded(read_int(), 4096),
+                 output_capacity = bounded(read_int(), 4096);
+      const bool closed = bounded(read_int(), 1) != 0;
+      std::vector<t27::num::Tword27> incoming(bounded(read_int(), 4096));
+      for (auto &w : incoming)
+        w = read_word();
+      Machine m(image, size, {input_capacity, output_capacity});
+      if (!m.feed_input(incoming))
+        throw std::runtime_error("initial input capacity");
+      if (closed)
+        m.close_input();
       m.configure_stack(begin, end);
       m.reset(entry);
       for (std::size_t i = 0; i < register_count; ++i)
         m.set_register(i, registers[i]);
       snapshot(m, {Stop::running, 0});
-      for (std::size_t i = 0; i < runs; ++i)
-        snapshot(m, m.run(bounded(read_int(), 1000)));
+      for (std::size_t i = 0; i < runs; ++i) {
+        const auto action = bounded(read_int(), 5);
+        if (action == 0) {
+          snapshot(m, m.run(bounded(read_int(), 1000)));
+        } else if (action == 1) {
+          std::vector<t27::num::Tword27> words(bounded(read_int(), 4096));
+          for (auto &w : words)
+            w = read_word();
+          t27::num::Tword27 accepted{};
+          if (m.feed_input(words))
+            accepted.t[0] = t27::num::Trit::P;
+          snapshot(m, {Stop::running, 0}, std::span(&accepted, 1));
+        } else if (action == 2) {
+          m.close_input();
+          snapshot(m, {Stop::running, 0});
+        } else if (action == 3) {
+          const auto drained = m.drain_output();
+          snapshot(m, {Stop::running, 0}, drained);
+        } else if (action == 4) {
+          m.reset(bounded(read_int(), 4096));
+          snapshot(m, {Stop::running, 0});
+        } else {
+          m.reset_io();
+          snapshot(m, {Stop::running, 0});
+        }
+      }
     }
     std::cin >> std::ws;
     if (!std::cin.eof())

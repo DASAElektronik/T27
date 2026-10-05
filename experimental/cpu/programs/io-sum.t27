@@ -1,0 +1,11 @@
+; SPDX-License-Identifier: Apache-2.0
+; Sum until explicit EOF; ordinary arithmetic wraps modulo 3^27.
+LI R2, 0
+loop:
+    IN R0, R1, 0
+    JZ R1, done
+    ADD R2, R2, R0
+    JMP loop
+done:
+    OUT R2, 0
+    HALT

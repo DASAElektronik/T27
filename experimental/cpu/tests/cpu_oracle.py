@@ -60,7 +60,7 @@ def corpus(seed, count):
         for operand,offset,width in (('d',3,2),('a',5,2),('b',7,2),('i',9,18)):
             if operand in form: used.update(range(offset,offset+width))
         for position in set(range(27))-used:
-            cases.append(case(f'reserved-{op}-{position}',[encode(op)+3**position],budgets=[1,1,0]))
+            cases.append(case(f'reserved-{op}-{position}',[encode(op,a=1 if op==-7 else 0)+3**position],budgets=[1,1,0]))
     # Real recursion encoded independently, no shared assembler.
     for n in range(11):
         image=[encode(2,d=0,i=n),encode(-1,i=1),encode(1),encode(12,a=0,i=7),
@@ -95,12 +95,60 @@ def corpus(seed, count):
         # Mostly one-step runs, plus batching to verify retired counts and budget resumability.
         budgets=[0]+([1]*40 if n%3 else [rng.randrange(5) for _ in range(12)])+[0,1]
         cases.append(case(f'random-{seed}-{n}',image,regs,size=size,begin=begin,budgets=budgets))
+    cases.extend(io_corpus(seed,count))
+    return cases
+
+def io_corpus(seed,count):
+    cases=[]
+    echo=[encode(-7,d=0,a=1),encode(12,a=1,i=2),encode(-8,a=0),encode(11,i=-4),encode(1)]
+    run=lambda n: dict(op='run',budget=n)
+    feed=lambda *w: dict(op='feed',words=list(w))
+    for capacity in (0,1,2):
+        c=case('io-directed-'+str(capacity),echo)
+        c['io']=dict(input_capacity=2,output_capacity=capacity)
+        c['actions']=[run(0),run(20),feed(0,-LIMIT),feed(LIMIT),run(30),run(30),
+                      dict(op='drain'),run(30),dict(op='drain'),run(30),feed(LIMIT),
+                      dict(op='close'),feed(1),run(30),dict(op='drain'),run(30),dict(op='drain'),run(0),
+                      dict(op='reset'),run(2),dict(op='reset_io'),dict(op='reset'),run(10),feed(7),run(30)]
+        cases.append(c)
+    for opcode in (-7,-8):
+        for endpoint in (-IMM,-1,1,IMM):
+            c=case(f'io-endpoint-{opcode}-{endpoint}',[encode(opcode,d=0,a=1,i=endpoint)])
+            c['io']=dict(input_capacity=0,output_capacity=0)
+            cases.append(c)
+    cases.append(case('io-alias-illegal',[-1087]))
+    for op,x,y in ((4,LIMIT,1),(7,-7,3)):
+        c=case('io-flags-'+str(op),[encode(op,d=2,a=3,b=4),encode(-7,d=0,a=1),encode(-8,a=0),
+                                 encode(-7,d=0,a=1),encode(1)], [0,0,0,x,y,0,0,0,0])
+        c['io']=dict(input=[LIMIT],closed=True,input_capacity=1,output_capacity=1)
+        cases.append(c)
+    # Host schedules exercise pausing, retries, queue lifecycle and rejection independently of instruction budgets.
+    rng=random.Random(seed ^ 0x1027)
+    for n in range(count):
+        d,a=rng.sample(range(9),2)
+        program=[encode(-7,d=d,a=a),encode(12,a=a,i=2),encode(-8,a=d),encode(11,i=-4),encode(1)]
+        if n%11==0: program[2]=encode(-8,a=d,i=rng.choice((-1,1)))
+        if n%13==0: program[0]=encode(-7,d=d,a=d) # Noncanonical destination alias.
+        cap=rng.randrange(5)
+        c=case(f'io-random-{seed}-{n}',program)
+        c['io']=dict(input_capacity=cap,output_capacity=rng.randrange(5),
+                     input=[rng.choice((-LIMIT,0,LIMIT)) for _ in range(rng.randrange(cap+1))],closed=bool(n%3==0))
+        c['actions']=[]
+        for step in range(60):
+            choice=rng.randrange(100)
+            action=(run(rng.randrange(12)) if choice<55 else
+                    feed(*(rng.choice((-LIMIT,0,LIMIT,rng.randint(-20,20))) for _ in range(rng.randrange(4)))) if choice<75 else
+                    dict(op='drain') if choice<87 else dict(op='close') if choice<92 else
+                    dict(op='reset') if choice<96 else dict(op='reset_io'))
+            c['actions'].append(action)
+        cases.append(c)
     return cases
 
 def self_check():
     # Hand-calculated independent witnesses validate the oracle before trusting comparisons.
     for instruction,value in [((2,0,0,0,5),98309),((3,8,0,0,0),-861),
-                              ((4,4,8,0,0),-7772),((-1,0,0,0,5),98414),((-4,8,0,0,0),104)]:
+                              ((4,4,8,0,0),-7772),((-1,0,0,0,5),98414),((-4,8,0,0,0),104),
+                              ((-7,0,1,0,0),-844),((-8,0,8,0,0),964)]:
         require(encode(*instruction)==value,'reference encoding vector')
         require(decode(value)==instruction,'reference decoding vector')
     m=Model(case('self',[encode(6,d=0,a=1,b=2),encode(1)],[0,LIMIT,2,0,0,0,0,0,0]))
@@ -111,11 +159,32 @@ def self_check():
     m.run(1); before=m.state(); after=m.run(1)
     require(after['fault']=='branch_address' and after['sp']==before['sp'] and after['memory']==before['memory'],'reference atomic return')
 
+    c=case('self-io',[encode(-7,d=0,a=1),encode(-8,a=0),encode(1)],[17,-1]+[0]*7)
+    m=Model(c)
+    require(m.run(1)['reason']=='input_wait' and m.pc==0 and m.registers[:2]==[17,-1], 'reference input wait')
+    m.apply(dict(op='close'))
+    state=m.run(1)
+    require(state['retired']==1 and state['registers'][:2]==[17,0], 'reference EOF preserves data')
+    m.run(1)
+    require(m.io['output']==[17], 'reference output')
+
+def actions(c):
+    return c.get('actions', [dict(op='run',budget=n) for n in c['budgets']])
+
 def protocol(cases):
     lines=[str(len(cases))]
     for c in cases:
-        lines.append(' '.join(map(str,[c['size'],len(c['image']),c['entry'],c['begin'],c['end'],len(c['budgets'])])))
-        lines.extend(' '.join(map(str,c[key])) for key in ('registers','image','budgets'))
+        steps=actions(c)
+        lines.append(' '.join(map(str,[c['size'],len(c['image']),c['entry'],c['begin'],c['end'],len(steps)])))
+        lines.extend(' '.join(map(str,c[key])) for key in ('registers','image'))
+        io=c.get('io',{})
+        words=io.get('input',[])
+        lines.append(' '.join(map(str,[io.get('input_capacity',256),io.get('output_capacity',256),int(io.get('closed',False)),len(words),*words])))
+        for a in steps:
+            op=a['op']
+            fields=([0,a['budget']] if op=='run' else [1,len(a['words']),*a['words']] if op=='feed' else
+                    [2] if op=='close' else [3] if op=='drain' else [4,a.get('entry',0)] if op=='reset' else [5])
+            lines.append(' '.join(map(str,fields)))
     return '\n'.join(lines)+'\n'
 
 def compare(bridge,cases,timeout,failure,trace=None):
@@ -129,18 +198,19 @@ def compare(bridge,cases,timeout,failure,trace=None):
         for c in cases:
             model=Model(c)
             if trace:
-                trace.write(json.dumps(dict(case=c['name'],input=c))+'\n')
-            for step,budget in enumerate([None]+c['budgets']):
-                expected=model.state() if budget is None else model.run(budget)
+                trace.write(json.dumps(dict(protocol_version=2,case=c['name'],input=c))+'\n')
+            for step,action in enumerate([None]+actions(c)):
+                budget=action.get('budget') if action else None
+                expected=model.state() if action is None else model.apply(action)
                 line=output.readline()
                 require(bool(line),f'missing bridge snapshot: {c["name"]}/{step}')
                 actual=json.loads(line)
                 if actual != expected:
-                    record=dict(case=c,step=step,budget=budget,expected=expected,actual=actual)
+                    record=dict(case=c,step=step,action=action,budget=budget,expected=expected,actual=actual)
                     failure.write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
                     raise AssertionError(f'{c["name"]} snapshot {step}: mismatch; replay {failure}')
                 if trace:
-                    trace.write(json.dumps(dict(case=c['name'],step=step,budget=budget,state=actual))+'\n')
+                    trace.write(json.dumps(dict(case=c['name'],step=step,action=action,budget=budget,state=actual))+'\n')
                 snapshots+=1; retired+=actual['retired']
             events.update(model.events)
         require(not output.read().strip(),'extra bridge output')
@@ -165,12 +235,14 @@ def main():
         report=compare(args.bridge.resolve(),cases,args.timeout,args.failure,handle)
     finally:
         if handle: handle.close()
-    report.update(seed=args.seed,random_cases=0 if args.replay else args.random_cases,
+    report.update(protocol_version=2,seed=args.seed,random_cases=0 if args.replay else 2*args.random_cases,
+                  random_cases_per_family=0 if args.replay else args.random_cases,
                   corpus_sha256=hashlib.sha256(protocol(cases).encode()).hexdigest())
     if not args.replay:
         events=report['events']
         require(all(events.get('opcode:'+str(op),0)>0 for op in FORMS),'missing opcode coverage')
         require(all(events.get('fault:'+fault,0)>0 for fault in FAULTS),'missing fault coverage')
+        require(all(events.get(event,0)>0 for event in ('io:input','io:output','io:eof','wait:input_wait','wait:output_wait','host:feed:True','host:feed:False')), 'missing I/O outcomes')
         require(all(events.get(f'branch:{op}:{taken}',0)>0 for op in (12,13) for taken in (False,True)), 'missing branch outcomes')
     if args.report: args.report.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,sort_keys=True))

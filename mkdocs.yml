@@ -43,6 +43,7 @@ nav:
       - Governance: guide/governance.md
   - Design:
       - Architecture: design/architecture.md
+      - ISA v0.2 word-stream I/O: design/isa-v0.2.md
       - ISA v0.1 calls and stack: design/isa-v0.1.md
       - Experimental ISA v0: design/isa-v0.md
       - I/O proposal: design/io-proposal.md
@@ -59,6 +60,7 @@ nav:
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
       - CPU differential oracle: repro/cpu-oracle.md
+      - I/O validation: repro/io-validation.md
       - CPU investigation: repro/cpu-investigation.md
       - Tests & CI: repro/tests-ci.md
       - Project review: repro/review-2026-10-05.md

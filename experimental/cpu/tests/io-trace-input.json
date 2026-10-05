@@ -1,0 +1,177 @@
+{
+  "case": {
+    "name": "io-directed-1",
+    "image": [
+      -844,
+      38649,
+      -980,
+      -78721,
+      1
+    ],
+    "registers": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "size": 16,
+    "entry": 0,
+    "begin": 5,
+    "end": 16,
+    "budgets": [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      3
+    ],
+    "io": {
+      "input_capacity": 2,
+      "output_capacity": 1
+    },
+    "actions": [
+      {
+        "op": "run",
+        "budget": 0
+      },
+      {
+        "op": "run",
+        "budget": 20
+      },
+      {
+        "op": "feed",
+        "words": [
+          0,
+          -3812798742493
+        ]
+      },
+      {
+        "op": "feed",
+        "words": [
+          3812798742493
+        ]
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "drain"
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "drain"
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "feed",
+        "words": [
+          3812798742493
+        ]
+      },
+      {
+        "op": "close"
+      },
+      {
+        "op": "feed",
+        "words": [
+          1
+        ]
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "drain"
+      },
+      {
+        "op": "run",
+        "budget": 30
+      },
+      {
+        "op": "drain"
+      },
+      {
+        "op": "run",
+        "budget": 0
+      },
+      {
+        "op": "reset"
+      },
+      {
+        "op": "run",
+        "budget": 2
+      },
+      {
+        "op": "reset_io"
+      },
+      {
+        "op": "reset"
+      },
+      {
+        "op": "run",
+        "budget": 10
+      },
+      {
+        "op": "feed",
+        "words": [
+          7
+        ]
+      },
+      {
+        "op": "run",
+        "budget": 30
+      }
+    ]
+  }
+}

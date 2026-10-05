@@ -1,0 +1,9 @@
+; SPDX-License-Identifier: Apache-2.0
+; Echo every signed word, including zero; stop on explicit EOF.
+loop:
+    IN R0, R1, 0
+    JZ R1, done
+    OUT R0, 0
+    JMP loop
+done:
+    HALT

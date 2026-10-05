@@ -9,6 +9,9 @@ build=Path(sys.argv[1] if len(sys.argv)>1 else 'build/release').resolve()
 tmp=build/'mutations'; tmp.mkdir(exist_ok=True)
 original=(root/'experimental/cpu/src/cpu.cpp').read_text()
 mutations={
+'input-not-consumed':('io_.input.erase(io_.input.begin());', '// deliberately omit consumption'),
+'eof-clobbers-data':('next.registers[i.rs1] = num::Tword27{}; // EOF: data destination unchanged.', 'next.registers[i.rs1] = num::Tword27{}; next.registers[i.rd] = num::Tword27{};'),
+'wait-advances-pc':('return Stop::input_wait;', '{ ++state_.pc; return Stop::input_wait; }'),
 'pop-clobbers-flags':('next.registers[i.rd] = value; // Restore without changing arithmetic flags.', 'write(value);'),
 'call-saves-wrong-return':('num::to_bt(static_cast<std::int64_t>(next.pc))','num::to_bt(static_cast<std::int64_t>(state_.pc))'),
 'fault-advances-pc':('state_.fault = fault;', 'state_.fault = fault; ++state_.pc;'),

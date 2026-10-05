@@ -7,7 +7,10 @@
 #include <stdexcept>
 
 namespace t27::experimental {
-Machine::Machine(std::span<const num::Tword27> image, std::size_t memory_words) {
+Machine::Machine(std::span<const num::Tword27> image, std::size_t memory_words, IoConfig io)
+    : io_config_(io) {
+  if (io.input_capacity > 1048576 || io.output_capacity > 1048576)
+    throw std::invalid_argument("I/O capacity limit is 1048576 words per queue");
   if (memory_words == 0 || memory_words > static_cast<std::uint64_t>(word_limit) + 1 ||
       image.size() > memory_words)
     throw std::invalid_argument("invalid memory/image size");
@@ -16,6 +19,28 @@ Machine::Machine(std::span<const num::Tword27> image, std::size_t memory_words) 
   memory_.resize(memory_words);
   std::copy(image.begin(), image.end(), memory_.begin());
   configure_stack(image.size(), memory_.size());
+  io_.input.reserve(io.input_capacity);
+  io_.output.reserve(io.output_capacity);
+}
+bool Machine::feed_input(std::span<const num::Tword27> words) {
+  for (const auto &word : words)
+    (void)num::from_bt(word.span());
+  if (io_.input_closed || words.size() > io_config_.input_capacity - io_.input.size())
+    return false;
+  // Copy before insertion: callers may supply a span into io().input or io().output.
+  const std::vector<num::Tword27> copy(words.begin(), words.end());
+  io_.input.insert(io_.input.end(), copy.begin(), copy.end());
+  return true;
+}
+std::vector<num::Tword27> Machine::drain_output() {
+  auto result = io_.output; // Allocation failure leaves the queue unchanged.
+  io_.output.clear();
+  return result;
+}
+void Machine::reset_io() noexcept {
+  io_.input.clear();
+  io_.output.clear();
+  io_.input_closed = false;
 }
 void Machine::configure_stack(std::uint64_t begin, std::uint64_t end) {
   if (begin > end || end > memory_.size())
@@ -80,6 +105,28 @@ Stop Machine::step() {
   std::size_t store_address = 0;
   num::Tword27 store_value{};
   switch (i.opcode) {
+  case Opcode::input:
+    if (i.immediate != 0)
+      return trap(Fault::io_endpoint);
+    if (io_.input.empty()) {
+      if (!io_.input_closed)
+        return Stop::input_wait;
+      next.registers[i.rs1] = num::Tword27{}; // EOF: data destination unchanged.
+    } else {
+      next.registers[i.rd] = io_.input.front();
+      next.registers[i.rs1] = num::Tword27{};
+      next.registers[i.rs1].t[0] = num::Trit::P;
+      io_.input.erase(io_.input.begin());
+    }
+    break;
+  case Opcode::output:
+    if (i.immediate != 0)
+      return trap(Fault::io_endpoint);
+    if (io_.output.size() == io_config_.output_capacity)
+      return Stop::output_wait;
+    // Append completes before CPU state commits; never exceed the configured bound.
+    io_.output.push_back(a);
+    break;
   case Opcode::nop:
     break;
   case Opcode::halt:
@@ -205,7 +252,7 @@ RunResult Machine::run(std::uint64_t budget) {
   std::uint64_t retired = 0;
   while (retired < budget) {
     const auto result = step();
-    if (result == Stop::fault)
+    if (result == Stop::fault || result == Stop::input_wait || result == Stop::output_wait)
       return {result, retired};
     ++retired;
     if (result == Stop::halted)

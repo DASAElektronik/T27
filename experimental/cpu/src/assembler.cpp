@@ -83,6 +83,20 @@ public:
     } else if (op == "PUSH" || op == "JMPR" || op == "CALLR") {
       i.opcode = op == "PUSH" ? Opcode::push : op == "JMPR" ? Opcode::jmpr : Opcode::callr;
       i.rs1 = reg();
+    } else if (op == "IN") {
+      i.opcode = Opcode::input;
+      i.rd = reg();
+      expect(",");
+      i.rs1 = reg();
+      if (i.rd == i.rs1)
+        fail("IN data and status registers must differ", 0);
+      expect(",");
+      i.immediate = integer();
+    } else if (op == "OUT") {
+      i.opcode = Opcode::output;
+      i.rs1 = reg();
+      expect(",");
+      i.immediate = integer();
     } else if (op == "LI") {
       i.opcode = Opcode::li;
       i.rd = reg();

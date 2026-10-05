@@ -1,0 +1,15 @@
+; SPDX-License-Identifier: Apache-2.0
+; Preserve callee-saved R5 while calling a function through a register.
+LI R5, 99
+LI R0, 41
+LI R4, increment
+CALLR R4
+LI R4, done
+JMPR R4
+increment:
+    PUSH R5
+    LI R5, 1
+    ADD R0, R0, R5
+    POP R5
+    RET
+done: HALT

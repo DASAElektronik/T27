@@ -9,8 +9,14 @@ inline constexpr std::size_t register_count = 9;
 inline constexpr std::int64_t immediate_limit = 193710244;  // (3^18 - 1) / 2
 inline constexpr std::int64_t word_limit = 3812798742493LL; // (3^27 - 1) / 2
 
-/// Experimental ISA v0; opcode is a signed three-trit field. Negative codes reserved.
+/// Experimental ISA v0.1; v0 codes 0..13 unchanged, -7..-13 reserved.
 enum class Opcode : std::int8_t {
+  callr = -6,
+  jmpr = -5,
+  pop = -4,
+  push = -3,
+  ret = -2,
+  call = -1,
   nop = 0,
   halt,
   li,

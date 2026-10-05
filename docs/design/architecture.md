@@ -10,7 +10,7 @@ instruction-level CPU model. There is no physical processor implementation.
 | Exact integer arithmetic | Implemented; checked conversions and terminating vector division |
 | Fixed 27-trit words | Implemented; symmetric wrap modulo 3^27, explicit flags |
 | Floating-point | [Historical RFCs](../rfcs/float-status.md); open semantics and missing implementations |
-| ISA / CPU / emulator | [Experimental ISA v0](isa-v0.md): nine registers, 14 instructions, precise faults |
+| ISA / CPU / emulator | [Experimental ISA v0.1](isa-v0.1.md): nine registers, 20 instructions, bounded stack, precise faults |
 | HDL / FPGA / physical cells | Planned; no implementation or measurement supplied here |
 | Stochastic computing | Separate research track requiring a statistical contract |
 | OS | Follows ISA, ABI, boot, I/O and interrupts |

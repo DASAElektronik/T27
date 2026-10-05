@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Experimental ISA v0 and emulator
 
+The current emulator also implements the [v0.1 call/stack extension](isa-v0.1.md).
+This page records the unchanged v0 base; v0.1 assigns six formerly reserved
+negative opcodes and adds SP, stack bounds and two faults.
+
 This is an executable design proposal, not a frozen ISA or a hardware implementation.
 The normative rules on this page apply to the optional `experimental/cpu` model.
 Its headers and library are not installed with the 0.2.0 integer core. Encoding,

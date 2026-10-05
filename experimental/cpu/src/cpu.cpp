@@ -2,6 +2,7 @@
 #include "t27/experimental/cpu.hpp"
 #include "t27/num/convert.hpp"
 #include "t27/num/div.hpp"
+#include "t27/num/fixed.hpp"
 #include <algorithm>
 #include <stdexcept>
 
@@ -14,12 +15,20 @@ Machine::Machine(std::span<const num::Tword27> image, std::size_t memory_words) 
     (void)num::from_bt(word.span());
   memory_.resize(memory_words);
   std::copy(image.begin(), image.end(), memory_.begin());
+  configure_stack(image.size(), memory_.size());
+}
+void Machine::configure_stack(std::uint64_t begin, std::uint64_t end) {
+  if (begin > end || end > memory_.size())
+    throw std::out_of_range("stack region");
+  stack_ = {begin, end};
+  state_.sp = end;
 }
 void Machine::reset(std::uint64_t entry) {
   if (entry >= memory_.size())
     throw std::out_of_range("entry address");
   state_ = State{};
   state_.pc = entry;
+  state_.sp = stack_.end;
 }
 void Machine::set_register(std::size_t index, const num::Tword27 &value) {
   if (index >= register_count)
@@ -69,6 +78,7 @@ Stop Machine::step() {
   };
   bool store = false;
   std::size_t store_address = 0;
+  num::Tword27 store_value{};
   switch (i.opcode) {
   case Opcode::nop:
     break;
@@ -120,7 +130,52 @@ Stop Machine::step() {
     else {
       store = true;
       store_address = index;
+      store_value = b;
     }
+    break;
+  }
+  case Opcode::call:
+  case Opcode::callr:
+  case Opcode::jmpr: {
+    const auto target = i.opcode == Opcode::call
+                            ? static_cast<std::int64_t>(state_.pc) + 1 + i.immediate
+                            : num::from_bt(a.span());
+    // Calls require an executable return address before modifying the stack.
+    if (!in_memory(target) || (i.opcode != Opcode::jmpr && next.pc >= memory_.size()))
+      return trap(Fault::branch_address);
+    if (i.opcode != Opcode::jmpr) {
+      if (state_.sp == stack_.begin)
+        return trap(Fault::stack_overflow);
+      store_value = num::to_word27(num::to_bt(static_cast<std::int64_t>(next.pc)));
+      next.sp = state_.sp - 1;
+      store_address = static_cast<std::size_t>(next.sp);
+      store = true;
+    }
+    next.pc = static_cast<std::uint64_t>(target);
+    break;
+  }
+  case Opcode::push:
+    if (state_.sp == stack_.begin)
+      return trap(Fault::stack_overflow);
+    next.sp = state_.sp - 1;
+    store_address = static_cast<std::size_t>(next.sp);
+    store_value = a;
+    store = true;
+    break;
+  case Opcode::pop:
+  case Opcode::ret: {
+    if (state_.sp == stack_.end)
+      return trap(Fault::stack_underflow);
+    const auto &value = memory_[static_cast<std::size_t>(state_.sp)];
+    if (i.opcode == Opcode::ret) {
+      const auto target = num::from_bt(value.span());
+      if (!in_memory(target))
+        return trap(Fault::branch_address);
+      next.pc = static_cast<std::uint64_t>(target);
+    } else {
+      next.registers[i.rd] = value; // Restore without changing arithmetic flags.
+    }
+    next.sp = state_.sp + 1;
     break;
   }
   case Opcode::jmp:
@@ -138,7 +193,7 @@ Stop Machine::step() {
   }
   }
   if (store)
-    memory_[store_address] = b;
+    memory_[store_address] = store_value;
   state_ = next;
   return state_.halted ? Stop::halted : Stop::running;
 }

@@ -75,7 +75,15 @@ public:
       i.opcode = Opcode::nop;
     else if (op == "HALT")
       i.opcode = Opcode::halt;
-    else if (op == "LI") {
+    else if (op == "RET")
+      i.opcode = Opcode::ret;
+    else if (op == "POP") {
+      i.opcode = Opcode::pop;
+      i.rd = reg();
+    } else if (op == "PUSH" || op == "JMPR" || op == "CALLR") {
+      i.opcode = op == "PUSH" ? Opcode::push : op == "JMPR" ? Opcode::jmpr : Opcode::callr;
+      i.rs1 = reg();
+    } else if (op == "LI") {
       i.opcode = Opcode::li;
       i.rd = reg();
       expect(",");
@@ -106,9 +114,12 @@ public:
       memory(i);
       expect(",");
       i.rs2 = reg();
-    } else if (op == "JMP" || op == "JZ" || op == "JNZ") {
-      i.opcode = op == "JMP" ? Opcode::jmp : op == "JZ" ? Opcode::jz : Opcode::jnz;
-      if (op != "JMP") {
+    } else if (op == "JMP" || op == "JZ" || op == "JNZ" || op == "CALL") {
+      i.opcode = op == "CALL"  ? Opcode::call
+                 : op == "JMP" ? Opcode::jmp
+                 : op == "JZ"  ? Opcode::jz
+                               : Opcode::jnz;
+      if (op == "JZ" || op == "JNZ") {
         i.rs1 = reg();
         expect(",");
       }

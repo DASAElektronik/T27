@@ -19,6 +19,8 @@ def run(args, status=0, out=(), err=()):
 
 for name, registers in [('sum', ('R0=55\n', 'R5=55\n')), ('factorial', ('R0=720\n',)),
                         ('division', ('R2=-2\n', 'R3=-1\n')),
+                        ('recursive-factorial', ('R0=720\n', 'sp=256 ')),
+                        ('indirect-call', ('R0=42\n', 'R5=99\n', 'sp=256 ')),
                         ('constants', ('R2=-3812798742493\n', 'overflow=1'))]:
     run([programs / (name + '.t27')], out=('stop=halted', *registers))
 run(['--help'], out=('Usage:',))
@@ -35,7 +37,9 @@ with tempfile.TemporaryDirectory(prefix='t27-assembly-') as tmp:
     example('NOP', 3, ('--memory', '1'), err=('fetch_address',))
     example('JMP -2', 3, err=('branch_address',))
     example('LOAD R0,[R8-1]', 3, err=('data_address',))
-    example('.word -1', 3, err=('illegal_instruction',))
+    example('RET', 3, err=('stack_underflow',))
+    example('CALL 0\nHALT', 3, ('--memory', '2'), err=('stack_overflow',))
+    example('.word -13', 3, err=('illegal_instruction',))
     example('HALT\nHALT', 2, ('--memory', '1'), err=('smaller than program',))
     example(';empty', 2, err=('emits no words',))
     example('HALT\n' + ';' * 1048576, 2, err=('1 MiB',))

@@ -20,6 +20,10 @@ std::uint64_t positive(std::string_view text) {
 }
 const char *fault_name(Fault fault) {
   switch (fault) {
+  case Fault::stack_overflow:
+    return "stack_overflow";
+  case Fault::stack_underflow:
+    return "stack_underflow";
   case Fault::none:
     return "none";
   case Fault::fetch_address:
@@ -37,7 +41,7 @@ const char *fault_name(Fault fault) {
 }
 void usage() {
   std::cout << "Usage: t27_run FILE [--steps N] [--memory N]\n"
-               "ISA v0 assembly; default 100000 instructions, at least 256 memory words.\n"
+               "ISA v0.1 assembly; default 100000 instructions, at least 256 memory words.\n"
                "Limits: 1 MiB source, 1048576 memory words. Entry address is zero.\n";
 }
 } // namespace
@@ -96,6 +100,8 @@ int main(int argc, char **argv) {
                          : result.reason == Stop::fault ? "fault"
                                                         : "step_limit";
     std::cout << "stop=" << reason << " pc=" << state.pc << " retired=" << result.retired << '\n';
+    std::cout << "sp=" << state.sp << " stack_begin=" << machine.stack_region().begin
+              << " stack_end=" << machine.stack_region().end << '\n';
     for (std::size_t n = 0; n < register_count; ++n)
       std::cout << "R" << n << "=" << t27::num::from_bt(state.registers[n].span()) << '\n';
     std::cout << "sign=" << static_cast<int>(state.flags.sign)

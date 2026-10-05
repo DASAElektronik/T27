@@ -1,9 +1,11 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-# Write and run ISA v0 programs
+# Write and run experimental T27 programs
 
 The experimental assembler translates text into the same canonical instruction
 words used by the [ISA v0 emulator](../design/isa-v0.md). `t27_run` assembles a
 file and executes it from address zero. No separate assembler installation is needed.
+The [ISA v0.1 extension](../design/isa-v0.1.md) adds CALL/CALLR, RET, PUSH/POP
+and JMPR, with recursive and indirect-call examples.
 Both tools remain part of the optional CPU module, outside the installed core API.
 
 ## Build and try it
@@ -95,7 +97,7 @@ appear once, in either order, after the file name. Use `--help` for usage.
 The runner accepts up to 1 MiB of source and 1,048,576 memory words. These are
 runner limits, not new ISA limits. The C++ assembler API has no 1 MiB cap.
 
-The runner prints stop reason, PC, retired instruction count, all nine registers
+The runner prints stop reason, PC, retired instruction count, all nine registers, stack pointer/bounds
 and flags. Assembly errors report `file:line:column: message`, with 1-based source
 positions (tabs count as one character). Runtime faults report their name and PC,
 plus the original source line when that PC belongs to the assembled image. For
@@ -125,9 +127,9 @@ the command-line runner rejects an empty image.
 CTest adds `t27.assembler` for instruction forms, label resolution, numeric
 boundaries and diagnostics, and `t27.assembler_cli` for real files, example outcomes,
 faults, budgets and exit codes. The CLI test requires Python 3.9+.
-The experimental build now has ten test groups and fifteen isolated header checks
-when Python is available. The six core test groups remain unchanged.
+The experimental build now has twelve test groups and fifteen isolated header checks
+when Python is available. The six core test groups remain unchanged. `t27.calls` tests the call/stack extension.
 
-There is no serialized executable/object format, linker, indirect call instruction,
-ABI, boot service or device I/O yet. The next design step is indirect control flow
-and a minimal calling convention; assembler syntax and ISA v0 remain experimental.
+Indirect calls and a minimal calling convention are implemented in v0.1.
+There is no serialized executable/object format, linker, boot service or device I/O
+yet. Assembler syntax and the ISA remain experimental.

@@ -10,7 +10,7 @@ See the [project site](https://dasaelektronik.github.io/T27/).
 
 T27 is an open research project led by Daniel Schuch. The current deliverable is a
 C++20 reference for balanced-ternary **integers** (`-1, 0, +1`) and 27-trit words.
-An optional experimental ISA v0 emulator now executes small programs on that core.
+An optional experimental ISA v0.1 emulator now executes small programs on that core.
 FPGA hardware, fixed-point, stochastic computing and an OS remain future work.
 AI-assisted analysis and development using OpenAI ChatGPT/Codex are described in
 [credits](docs/guide/credits.md).
@@ -47,9 +47,9 @@ the independent oracle will not run; such a run does not satisfy the release gat
 
 ## Experimental CPU milestone
 
-The optional [ISA v0 model](docs/design/isa-v0.md) has nine 27-trit registers,
-14 instructions, unified word memory and precise faults. It runs sum, factorial
-and signed-division examples. Its encoding and API remain open design proposals.
+The optional [ISA v0.1 model](docs/design/isa-v0.1.md) has nine 27-trit registers,
+20 instructions, unified word memory, bounded stack and precise faults. It runs sum, factorial
+and signed-division examples, plus recursive and indirect function calls. Its encoding and API remain open design proposals.
 
 ```sh
 cmake -S . -B build-cpu -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_EXPERIMENTAL_CPU=ON -DT27_BUILD_TESTS=ON
@@ -61,7 +61,7 @@ ctest --test-dir build-cpu -C Debug --output-on-failure
 On Visual Studio, the runner is `build-cpu/Debug/t27_run.exe`.
 See the [assembler guide](docs/guide/assembler.md) for syntax, labels and diagnostics.
 The module defaults to OFF and is excluded from the installed integer package.
-It adds four CTest groups (with Python) and three isolated header checks when enabled.
+It adds six CTest groups (with Python) and three isolated header checks when enabled.
 
 ## Core contract
 
@@ -80,6 +80,9 @@ Read [the normative contract](docs/design/numeric-contract.md) and
 [the migration guide](docs/guide/migration-0.2.md) before replacing an older snapshot.
 
 ## Validation
+
+The experimental CPU also has an [independent Python state oracle](docs/repro/cpu-oracle.md),
+including deterministic random programs and complete memory comparisons.
 
 CTest registers basic, contract, extra, example, deterministic fuzz-harness, and
 independent Python integer-oracle tests.

@@ -34,7 +34,7 @@ nav:
   - Guide:
       - Quickstart: guide/quickstart.md
       - Migration to 0.2: guide/migration-0.2.md
-      - ISA v0 assembler: guide/assembler.md
+      - Experimental assembler: guide/assembler.md
       - Examples: guide/examples.md
       - Glossary: guide/glossary.md
       - Credits: guide/credits.md
@@ -43,7 +43,9 @@ nav:
       - Governance: guide/governance.md
   - Design:
       - Architecture: design/architecture.md
+      - ISA v0.1 calls and stack: design/isa-v0.1.md
       - Experimental ISA v0: design/isa-v0.md
+      - I/O proposal: design/io-proposal.md
       - Numeric contract: design/numeric-contract.md
       - Cells & Encoding: design/cells.md
       - Non-Infringement Scope: design/ip-scope.md
@@ -56,6 +58,8 @@ nav:
   - API reference: api/index.html
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
+      - CPU differential oracle: repro/cpu-oracle.md
+      - CPU investigation: repro/cpu-investigation.md
       - Tests & CI: repro/tests-ci.md
       - Project review: repro/review-2026-10-05.md
   - Roadmap: roadmap.md

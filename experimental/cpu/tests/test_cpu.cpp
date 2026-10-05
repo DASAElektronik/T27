@@ -55,7 +55,7 @@ static void codec() {
       }
     }
   }
-  for (int code = -13; code < 0; ++code)
+  for (int code = -13; code < -6; ++code)
     check_throws<std::invalid_argument>([&] { (void)decode(word(code)); });
   check_throws<std::invalid_argument>([] { (void)encode({static_cast<Opcode>(14)}); });
   check_throws<std::invalid_argument>([] { (void)encode({Opcode::li, 9}); });
@@ -225,7 +225,7 @@ static void faults() {
   Machine fetch(program({{Opcode::nop}}), 1);
   CHECK(fetch.run(2).retired == 1 && fetch.state().fault == Fault::fetch_address &&
         fetch.state().pc == 1);
-  Machine illegal(std::vector<Tword27>{word(-1)});
+  Machine illegal(std::vector<Tword27>{word(-13)});
   CHECK(illegal.step() == Stop::fault && illegal.state().fault == Fault::illegal_instruction);
   illegal.poke(0, encode({Opcode::halt}));
   illegal.reset();

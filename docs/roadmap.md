@@ -14,7 +14,9 @@ The [experimental ISA v0](design/isa-v0.md) implements registers, word/address
 sizes, instruction encodings, memory semantics, precise faults and arithmetic
 flags, with an emulator and small test programs. Review these design decisions
 before freezing the ISA. The [assembler and runner](guide/assembler.md) support labels and full-word
-constants through `.word` and LOAD. Next: indirect control flow and a calling convention.
+constants through `.word` and LOAD. The [v0.1 extension](design/isa-v0.1.md) now adds bounded stack operations, direct
+and indirect calls, returns and a minimal calling convention. Next: review the
+convention and define minimal I/O.
 Specify ABI, calling convention, boot path, I/O and interrupts before OS work.
 
 ## 3. FPGA reference

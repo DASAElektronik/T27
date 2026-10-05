@@ -1,0 +1,18 @@
+; SPDX-License-Identifier: Apache-2.0
+; ABI v0.1: R0 argument/result; R1 scratch; SP restored; R5-R8 preserved.
+; Requires n >= 0. Six recursive frames plus the base call use 13 stack words.
+LI R0, 6
+CALL factorial
+HALT
+factorial:
+    JZ R0, base
+    PUSH R0
+    LI R1, 1
+    SUB R0, R0, R1
+    CALL factorial
+    POP R1
+    MUL R0, R0, R1
+    RET
+base:
+    LI R0, 1
+    RET

@@ -1,6 +1,19 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Changelog
 
+## Experimental ISA v0.1 - unreleased
+
+- Add a checked CPU runtime benchmark, replay fixtures, mutation-sensitivity
+  experiments and a documented ISA/ABI and I/O investigation.
+- Add an independent Python CPU oracle, deterministic generated programs, full
+  architectural snapshots and replayable differential failures.
+
+- Preserve all v0 opcode encodings; add CALL, CALLR, RET, PUSH, POP and JMPR.
+- Add a dedicated stack pointer, configurable bounds, precise stack faults and
+  validation of return addresses before state changes.
+- Define a minimal register calling convention and add recursive factorial and
+  indirect-call examples, assembler syntax, runner output and regression tests.
+
 ## Experimental ISA v0 - unreleased
 
 - Add a two-pass text assembler with labels, `.word`, source diagnostics and a

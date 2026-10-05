@@ -57,6 +57,7 @@ nav:
   - API reference: api/index.html
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
+      - CPU differential oracle: repro/cpu-oracle.md
       - Tests & CI: repro/tests-ci.md
       - Project review: repro/review-2026-10-05.md
   - Roadmap: roadmap.md

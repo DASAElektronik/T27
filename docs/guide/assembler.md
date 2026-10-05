@@ -127,7 +127,7 @@ the command-line runner rejects an empty image.
 CTest adds `t27.assembler` for instruction forms, label resolution, numeric
 boundaries and diagnostics, and `t27.assembler_cli` for real files, example outcomes,
 faults, budgets and exit codes. The CLI test requires Python 3.9+.
-The experimental build now has eleven test groups and fifteen isolated header checks
+The experimental build now has twelve test groups and fifteen isolated header checks
 when Python is available. The six core test groups remain unchanged. `t27.calls` tests the call/stack extension.
 
 Indirect calls and a minimal calling convention are implemented in v0.1.

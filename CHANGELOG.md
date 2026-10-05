@@ -3,6 +3,9 @@
 
 ## Experimental ISA v0.1 - unreleased
 
+- Add an independent Python CPU oracle, deterministic generated programs, full
+  architectural snapshots and replayable differential failures.
+
 - Preserve all v0 opcode encodings; add CALL, CALLR, RET, PUSH, POP and JMPR.
 - Add a dedicated stack pointer, configurable bounds, precise stack faults and
   validation of return addresses before state changes.

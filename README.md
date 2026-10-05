@@ -61,7 +61,7 @@ ctest --test-dir build-cpu -C Debug --output-on-failure
 On Visual Studio, the runner is `build-cpu/Debug/t27_run.exe`.
 See the [assembler guide](docs/guide/assembler.md) for syntax, labels and diagnostics.
 The module defaults to OFF and is excluded from the installed integer package.
-It adds five CTest groups (with Python) and three isolated header checks when enabled.
+It adds six CTest groups (with Python) and three isolated header checks when enabled.
 
 ## Core contract
 
@@ -80,6 +80,9 @@ Read [the normative contract](docs/design/numeric-contract.md) and
 [the migration guide](docs/guide/migration-0.2.md) before replacing an older snapshot.
 
 ## Validation
+
+The experimental CPU also has an [independent Python state oracle](docs/repro/cpu-oracle.md),
+including deterministic random programs and complete memory comparisons.
 
 CTest registers basic, contract, extra, example, deterministic fuzz-harness, and
 independent Python integer-oracle tests.

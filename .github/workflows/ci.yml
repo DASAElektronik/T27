@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DT27_BUILD_TESTS=ON -DT27_BUILD_BENCH=ON -DT27_WARNINGS_AS_ERRORS=ON
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DT27_BUILD_TESTS=ON -DT27_BUILD_EXPERIMENTAL_CPU=ON -DT27_BUILD_BENCH=ON -DT27_WARNINGS_AS_ERRORS=ON
       - name: Build
         run: cmake --build build --config ${{ matrix.config }} --parallel 2
       - name: Test

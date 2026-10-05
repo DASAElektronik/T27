@@ -10,8 +10,11 @@ A release is gated on those results; a candidate version is not a published tag.
 
 ## 2. Executable ISA model
 
-Define registers, word/address sizes, instruction encodings, memory semantics,
-exceptions and arithmetic flags. Implement an emulator and small test programs.
+The [experimental ISA v0](design/isa-v0.md) implements registers, word/address
+sizes, instruction encodings, memory semantics, precise faults and arithmetic
+flags, with an emulator and small test programs. Review these design decisions
+before freezing the ISA. The [assembler and runner](guide/assembler.md) support labels and full-word
+constants through `.word` and LOAD. Next: indirect control flow and a calling convention.
 Specify ABI, calling convention, boot path, I/O and interrupts before OS work.
 
 ## 3. FPGA reference

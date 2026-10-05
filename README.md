@@ -10,7 +10,8 @@ See the [project site](https://dasaelektronik.github.io/T27/).
 
 T27 is an open research project led by Daniel Schuch. The current deliverable is a
 C++20 reference for balanced-ternary **integers** (`-1, 0, +1`) and 27-trit words.
-CPU/ISA, FPGA hardware, fixed-point, stochastic computing and an OS remain future work.
+An optional experimental ISA v0 emulator now executes small programs on that core.
+FPGA hardware, fixed-point, stochastic computing and an OS remain future work.
 AI-assisted analysis and development using OpenAI ChatGPT/Codex are described in
 [credits](docs/guide/credits.md).
 
@@ -43,6 +44,24 @@ ctest --preset ctest-release
 
 Python must be available during CMake configuration. If missing, CMake warns that
 the independent oracle will not run; such a run does not satisfy the release gate.
+
+## Experimental CPU milestone
+
+The optional [ISA v0 model](docs/design/isa-v0.md) has nine 27-trit registers,
+14 instructions, unified word memory and precise faults. It runs sum, factorial
+and signed-division examples. Its encoding and API remain open design proposals.
+
+```sh
+cmake -S . -B build-cpu -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_EXPERIMENTAL_CPU=ON -DT27_BUILD_TESTS=ON
+cmake --build build-cpu --config Debug --parallel 2
+ctest --test-dir build-cpu -C Debug --output-on-failure
+./build-cpu/t27_run experimental/cpu/programs/sum.t27
+```
+
+On Visual Studio, the runner is `build-cpu/Debug/t27_run.exe`.
+See the [assembler guide](docs/guide/assembler.md) for syntax, labels and diagnostics.
+The module defaults to OFF and is excluded from the installed integer package.
+It adds four CTest groups (with Python) and three isolated header checks when enabled.
 
 ## Core contract
 
@@ -100,6 +119,7 @@ cpack -C Debug -G ZIP
 
 - `src/t27-core/`, `include/t27/`: integer implementation and public API.
 - `tests/`, `fuzz/`, `examples/`: independent checks and examples.
+- `experimental/cpu/`: optional instruction-level emulator, codec, tests and demo.
 - `docs/`: MkDocs site, Doxygen inputs and historical RFCs.
 - `cmake/`, `tools/`, `.github/workflows/`: build, validation and delivery.
 

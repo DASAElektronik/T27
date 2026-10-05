@@ -1,0 +1,19 @@
+name: Sanitizers
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Configure actual instrumentation
+        env:
+          CXX: clang++
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_ENABLE_SANITIZERS=ON -DT27_BUILD_TESTS=ON
+      - run: cmake --build build --parallel 2
+      - run: ctest --test-dir build --output-on-failure

@@ -1,0 +1,20 @@
+name: Coverage
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  coverage:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y lcov
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_TESTS=ON -DT27_ENABLE_COVERAGE=ON
+      - run: cmake --build build --target coverage-lcov --parallel 2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: build/coverage-html
+          if-no-files-found: error

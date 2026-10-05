@@ -1,0 +1,20 @@
+name: Format
+
+on:
+  pull_request:
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the reviewed formatter version
+        run: python -m pip install clang-format==18.1.8
+      - name: Run clang-format check
+        run: |
+          FILES=$(git ls-files '*.cpp' '*.hpp' '*.h' | tr '\n' ' ')
+          clang-format --version
+          test -z "$FILES" || clang-format -n --Werror $FILES

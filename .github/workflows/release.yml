@@ -1,0 +1,46 @@
+name: Release candidate packages
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: read
+jobs:
+  packages:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify tag version
+        run: python tools/check_release_tag.py
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DT27_BUILD_TESTS=ON -DT27_WARNINGS_AS_ERRORS=ON
+      - run: cmake --build build --config Release --parallel 2
+      - run: ctest --test-dir build -C Release --output-on-failure
+      - run: python tools/check_install.py build Release
+      - working-directory: build
+        run: cpack -C Release -G ZIP
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t27-packages-${{ matrix.os }}
+          path: build/*.zip
+          if-no-files-found: error
+  draft:
+    needs: packages
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: t27-packages-*
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          files: dist/*.zip

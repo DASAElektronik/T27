@@ -1,11 +1,9 @@
 cff-version: 1.2.0
-title: Ternary Computer (T27)
-message: If you use this project, please cite it as below.
-type: software
+message: "Cite the exact commit or archived snapshot used; this is an unreleased review candidate."
+title: "T27: Balanced-Ternary Core"
+version: "0.2.0-review"
 authors:
-  - given-names: T27
-    family-names: Contributors
-repository-code: https://github.com/<user-or-org>/<repo>
-license: Apache-2.0
-version: 0.1.0
-date-released: 2025-09-28
+  - family-names: "Schuch"
+    given-names: "Daniel"
+repository-code: "https://github.com/DASAElektronik/T27"
+abstract: "Open research on balanced-ternary integer arithmetic. AI-assisted development is described in docs/guide/credits.md."

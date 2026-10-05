@@ -1,16 +1,32 @@
-# Roadmap (draft)
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+# Roadmap and acceptance gates
 
-## Milestone 0 — Public launch
-- Repo scaffold, docs, CI for docs (done)
+## 1. Consolidate the integer core
 
-## Milestone 1 — Encoding & core cells
-- Define encoding tables
-- Implement and test adders/decoders
+Integrate the 0.2.0 corrections, independent tests, install/package checks and
+combined documentation. Keep old behavior changes explicit in the migration guide.
+Validate Linux and Windows Debug/Release, sanitizers, coverage and timed fuzzing.
+A release is gated on those results; a candidate version is not a published tag.
 
-## Milestone 2 — Reference design
-- Small arithmetic demo
-- Measurement notes
+## 2. Executable ISA model
 
-## Milestone 3 — Packaging & release
-- First tagged release (v0.1)
-- Publish docs site and examples
+Define registers, word/address sizes, instruction encodings, memory semantics,
+exceptions and arithmetic flags. Implement an emulator and small test programs.
+Specify ABI, calling convention, boot path, I/O and interrupts before OS work.
+
+## 3. FPGA reference
+
+Map the accepted ISA and encodings into RTL, test against the software model,
+then measure resources, timing and power on an explicitly identified platform.
+Use a matched binary baseline before making efficiency claims.
+
+## 4. System software
+
+Build minimal boot/runtime services, drivers and then OS primitives on the
+validated processor model. Keep reproducible tests across emulator and FPGA.
+
+## Separate research tracks
+
+Resolve the floating-point RFC value/encoding contract before implementation.
+Stochastic computing needs representation, generator-correlation and error bounds
+before throughput estimates become meaningful system results.

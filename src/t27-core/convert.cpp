@@ -1,44 +1,73 @@
+// SPDX-License-Identifier: MIT
 #include "t27/num/convert.hpp"
-#include <algorithm>
+#include "t27/num/detail.hpp"
+#include <limits>
 namespace t27::num {
-std::vector<Trit> to_bt(int64_t n) {
-    std::vector<Trit> out;
-    if (n == 0) { out.push_back(Trit::Z); return out; }
-    int64_t x = n;
-    while (x != 0) {
-        int64_t q = x / 3;
-        int64_t r = x % 3;
-        if (r < 0) { r += 3; q -= 1; }
-        if (r == 2) { out.push_back(Trit::N); x = q + 1; }
-        else if (r == 1) { out.push_back(Trit::P); x = q; }
-        else { out.push_back(Trit::Z); x = q; }
+std::vector<Trit> to_bt(std::int64_t n) {
+  std::vector<Trit> out;
+  do {
+    auto quotient = n / 3;
+    auto remainder = n % 3;
+    if (remainder == 2) {
+      remainder = -1;
+      ++quotient;
     }
-    return out;
+    if (remainder == -2) {
+      remainder = 1;
+      --quotient;
+    }
+    out.push_back(static_cast<Trit>(remainder));
+    n = quotient;
+  } while (n != 0);
+  return out;
 }
-int64_t from_bt(std::span<const Trit> trits) {
-    int64_t p = 1, s = 0;
-    for (size_t i = 0; i < trits.size(); ++i) { s += static_cast<int>(trits[i]) * p; p *= 3; }
-    return s;
+std::int64_t from_bt(std::span<const Trit> trits) {
+  detail::validate(trits);
+  std::size_t length = trits.size();
+  while (length && trits[length - 1] == Trit::Z)
+    --length;
+  if (!length)
+    return 0;
+  const bool negative = trits[length - 1] == Trit::N;
+  const auto max = static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max());
+  const std::uint64_t limit = negative ? max + 1 : max;
+  std::uint64_t magnitude = 0;
+  // Positive balanced prefixes are >= 1 and grow monotonically. Check the
+  // complete 3*m+d operation before multiplication; no signed overflow.
+  for (std::size_t i = length; i-- > 0;) {
+    const int digit = static_cast<int>(trits[i]) * (negative ? -1 : 1);
+    const auto threshold =
+        digit < 0 ? (limit + 1) / 3 : (limit - static_cast<std::uint64_t>(digit)) / 3;
+    if (magnitude > threshold)
+      throw std::overflow_error("balanced value outside int64 range");
+    magnitude *= 3;
+    if (digit < 0)
+      --magnitude;
+    else
+      magnitude += static_cast<std::uint64_t>(digit);
+  }
+  if (!negative)
+    return static_cast<std::int64_t>(magnitude);
+  if (magnitude == max + 1)
+    return std::numeric_limits<std::int64_t>::min();
+  return -static_cast<std::int64_t>(magnitude);
 }
 std::string to_string(std::span<const Trit> trits) {
-    if (trits.empty()) return "0";
-    int ms = static_cast<int>(trits.size()) - 1;
-    while (ms > 0 && trits[ms] == Trit::Z) --ms;
-    std::string s; s.reserve(ms + 1);
-    for (int i = ms; i >= 0; --i) s.push_back(to_char(trits[i]));
-    return s;
+  auto value = detail::canonical(trits);
+  std::string out;
+  out.reserve(value.size());
+  for (auto it = value.rbegin(); it != value.rend(); ++it)
+    out.push_back(to_char(*it));
+  return out;
 }
-std::vector<Trit> parse_bt(std::string_view ms_to_ls) {
-    std::vector<Trit> out;
-    out.reserve(ms_to_ls.size());
-    for (auto it = ms_to_ls.rbegin(); it != ms_to_ls.rend(); ++it) {
-        char c = *it;
-        if (c == '-' || c == '0' || c == '+') out.push_back(from_char(c));
-    }
-    if (out.empty()) out.push_back(Trit::Z);
-    int ms = static_cast<int>(out.size()) - 1;
-    while (ms > 0 && out[ms] == Trit::Z) --ms;
-    out.resize(ms + 1);
-    return out;
+std::vector<Trit> parse_bt(std::string_view text) {
+  if (text.empty())
+    throw std::invalid_argument("empty balanced-ternary string");
+  std::vector<Trit> out;
+  out.reserve(text.size());
+  for (auto it = text.rbegin(); it != text.rend(); ++it)
+    out.push_back(from_char(*it));
+  detail::canonicalize(out);
+  return out;
 }
 } // namespace t27::num

@@ -1,15 +1,23 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Ternary Computer (T27)
 
-**Open, patent-friendly ternary logic** — building blocks, methods, and reference designs.
+T27 is an open research project for balanced ternary (−1, 0, +1).
+The current implementation is a **C++20 integer reference**, with arbitrary-length
+trit vectors and fixed 27-trit words. Version 0.2.0 is an unreleased review candidate.
 
-- Code/HDL: Apache-2.0 · Hardware: CERN-OHL-P-2.0 · Docs: CC-BY-4.0
-- Patent non-assert pledge included
-- Reproducible measurements and CI
+- [Build and test the core](guide/quickstart.md)
+- [Read the numeric contract](design/numeric-contract.md)
+- [Migrate from the 2025 implementation](guide/migration-0.2.md)
+- [Browse the generated API](api/index.html)
+- [Review the floating-point RFCs](rfcs/float-status.md)
 
----
+The candidate corrects division termination, multiplication wrap, shifts,
+conversions and test references. The [review](repro/review-2026-10-05.md) separates
+implemented functionality from designs and records validation limits.
 
-!!! tip "Get started"
-    - Read the [Quickstart](guide/quickstart.md)
-    - Check the [Roadmap](roadmap.md)
-    - Join the discussion via GitHub Discussions
-    - [Follow on LinkedIn](https://www.linkedin.com/in/daniel-schuch-a710418b/)
+CPU/ISA, FPGA, fixed-point, stochastic computing and an OS are future work.
+Energy savings, measured hardware performance and third-party patent clearance
+have not been established by the software implementation.
+
+See the [roadmap](roadmap.md), [licensing](guide/licensing.md) and
+[contribution guide](guide/contributing.md).

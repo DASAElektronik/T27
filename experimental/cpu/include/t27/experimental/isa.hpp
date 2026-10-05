@@ -9,8 +9,10 @@ inline constexpr std::size_t register_count = 9;
 inline constexpr std::int64_t immediate_limit = 193710244;  // (3^18 - 1) / 2
 inline constexpr std::int64_t word_limit = 3812798742493LL; // (3^27 - 1) / 2
 
-/// Experimental ISA v0.1; v0 codes 0..13 unchanged, -7..-13 reserved.
+/// Experimental ISA v0.2; v0/v0.1 codes unchanged, -9..-13 reserved.
 enum class Opcode : std::int8_t {
+  output = -8,
+  input = -7,
   callr = -6,
   jmpr = -5,
   pop = -4,

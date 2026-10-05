@@ -55,7 +55,7 @@ static void codec() {
       }
     }
   }
-  for (int code = -13; code < -6; ++code)
+  for (int code = -13; code < -8; ++code)
     check_throws<std::invalid_argument>([&] { (void)decode(word(code)); });
   check_throws<std::invalid_argument>([] { (void)encode({static_cast<Opcode>(14)}); });
   check_throws<std::invalid_argument>([] { (void)encode({Opcode::li, 9}); });

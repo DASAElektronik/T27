@@ -16,7 +16,7 @@ LATEX_HIDE_INDICES     = NO
 PDF_HYPERLINKS         = YES
 EXTRA_PACKAGES         = amsmath, amssymb, mathtools
 
-INPUT = include src/t27-core experimental/cpu/include experimental/cpu/src docs/design/isa-v0.md docs/design/isa-v0.1.md docs/repro/cpu-oracle.md docs/guide/assembler.md docs/api-main.md docs/design/numeric-contract.md docs/design/alg-long-div.md docs/design/proof_long_div.md docs/guide/examples.md docs/guide/glossary.md docs/t27_groups.dox
+INPUT = include src/t27-core experimental/cpu/include experimental/cpu/src docs/design/isa-v0.md docs/design/isa-v0.1.md docs/design/isa-v0.2.md docs/repro/cpu-oracle.md docs/guide/assembler.md docs/api-main.md docs/design/numeric-contract.md docs/design/alg-long-div.md docs/design/proof_long_div.md docs/guide/examples.md docs/guide/glossary.md docs/t27_groups.dox
 USE_MDFILE_AS_MAINPAGE = docs/api-main.md
 RECURSIVE              = YES
 

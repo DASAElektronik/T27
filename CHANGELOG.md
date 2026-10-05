@@ -1,6 +1,12 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Changelog
 
+## Experimental ISA v0.2 - unreleased
+
+- Add IN/OUT word streams, separate EOF status, bounded queues, precise resumable
+  waits and explicit CPU/I/O reset ownership. Extend independent differential
+  testing with queue state and deterministic host schedules.
+
 ## Experimental ISA v0.1 - unreleased
 
 - Add a checked CPU runtime benchmark, replay fixtures, mutation-sensitivity

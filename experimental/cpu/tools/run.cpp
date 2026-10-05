@@ -20,6 +20,8 @@ std::uint64_t positive(std::string_view text) {
 }
 const char *fault_name(Fault fault) {
   switch (fault) {
+  case Fault::io_endpoint:
+    return "io_endpoint";
   case Fault::stack_overflow:
     return "stack_overflow";
   case Fault::stack_underflow:
@@ -96,9 +98,11 @@ int main(int argc, char **argv) {
     Machine machine(assembly.words, static_cast<std::size_t>(memory));
     const auto result = machine.run(budget);
     const auto &state = machine.state();
-    const char *reason = result.reason == Stop::halted  ? "halted"
-                         : result.reason == Stop::fault ? "fault"
-                                                        : "step_limit";
+    const char *reason = result.reason == Stop::halted        ? "halted"
+                         : result.reason == Stop::fault       ? "fault"
+                         : result.reason == Stop::input_wait  ? "input_wait"
+                         : result.reason == Stop::output_wait ? "output_wait"
+                                                              : "step_limit";
     std::cout << "stop=" << reason << " pc=" << state.pc << " retired=" << result.retired << '\n';
     std::cout << "sp=" << state.sp << " stack_begin=" << machine.stack_region().begin
               << " stack_end=" << machine.stack_region().end << '\n';
@@ -113,7 +117,7 @@ int main(int argc, char **argv) {
       std::cerr << ": fault=" << fault_name(state.fault) << " at pc=" << state.pc << '\n';
       return 3;
     }
-    return result.reason == Stop::halted ? 0 : 4;
+    return result.reason == Stop::halted ? 0 : result.reason == Stop::step_limit ? 4 : 5;
   } catch (const AssemblyError &error) {
     std::cerr << path << ':' << error.line() << ':' << error.column() << ": " << error.what()
               << '\n';

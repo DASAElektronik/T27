@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Independent integer semantics for ISA v0.1; no imports from the C++ implementation.
+"""Independent integer semantics for ISA v0.2; no imports from the C++ implementation.
 
 Words are Python integers. Trit fields are extracted with modular arithmetic;
 full-width products use arbitrary precision. This is a test model, not a second
@@ -13,11 +13,14 @@ IMM = (3**18-1)//2
 # Used operand names, not the production codec's bit masks.
 FORMS = {0: '', 1: '', 2: 'di', 3: 'da', 4: 'dab', 5: 'dab', 6: 'dab',
          7: 'dab', 8: 'dab', 9: 'dai', 10: 'abi', 11: 'i', 12: 'ai', 13: 'ai',
-         -1: 'i', -2: '', -3: 'a', -4: 'd', -5: 'a', -6: 'a'}
+         -1: 'i', -2: '', -3: 'a', -4: 'd', -5: 'a', -6: 'a', -7: 'dai', -8: 'ai'}
 FAULTS = {'fetch_address', 'illegal_instruction', 'divide_by_zero', 'data_address',
-          'branch_address', 'stack_overflow', 'stack_underflow'}
+          'branch_address', 'stack_overflow', 'stack_underflow', 'io_endpoint'}
 
 class Trap(Exception):
+    pass
+
+class Wait(Exception):
     pass
 
 def encode(op, d=0, a=0, b=0, i=0):
@@ -38,7 +41,7 @@ def decode(word):
         word = (word-part)//radix
         values.append(part)
     op,d,a,b,i = values
-    if op not in FORMS:
+    if op not in FORMS or (op == -7 and d == a):
         raise Trap('illegal_instruction')
     form = FORMS[op]
     if any(value != 0 and name not in form for name,value in zip('dabi',(d,a,b,i))):
@@ -53,12 +56,16 @@ class Model:
         self.begin, self.end = case['begin'], case['end']
         self.flags = [0,False,False]
         self.halted, self.fault = False,'none'
+        config = case.get('io', {})
+        self.io = dict(input=config.get('input', [])[:], output=[], closed=config.get('closed', False),
+                       input_capacity=config.get('input_capacity',256), output_capacity=config.get('output_capacity',256))
         self.events = Counter()
 
     def state(self, reason='running', retired=0):
         return dict(reason=reason, retired=retired, pc=self.pc, sp=self.sp,
                     halted=self.halted, fault=self.fault, flags=self.flags[:],
-                    registers=self.registers[:], memory=self.memory[:])
+                    registers=self.registers[:], memory=self.memory[:],
+                    io={**self.io, 'input':self.io['input'][:], 'output':self.io['output'][:]}, host_result=[])
 
     def address(self, value, error):
         if not 0 <= value < len(self.memory):
@@ -89,7 +96,24 @@ class Model:
         self.events['opcode:'+str(op)] += 1
         x,y = self.registers[a],self.registers[b]
         self.pc += 1
-        if op == 0:
+        if op in (-7,-8):
+            if imm != 0: raise Trap('io_endpoint')
+            if op == -7:
+                if self.io['input']:
+                    self.registers[d] = self.io['input'].pop(0)
+                    self.registers[a] = 1
+                    self.events['io:input'] += 1
+                elif self.io['closed']:
+                    self.registers[a] = 0
+                    self.events['io:eof'] += 1
+                else:
+                    raise Wait('input_wait')
+            else:
+                if len(self.io['output']) == self.io['output_capacity']:
+                    raise Wait('output_wait')
+                self.io['output'].append(x)
+                self.events['io:output'] += 1
+        elif op == 0:
             pass
         elif op == 1:
             self.halted = True
@@ -139,13 +163,42 @@ class Model:
             before = self.state()
             try:
                 self.execute()
-            except Trap as fault:
+            except (Trap,Wait) as fault:
                 # Reference uses rollback; production stages changes before committing.
-                for field in ('pc','sp','flags','registers','memory','halted'):
+                for field in ('pc','sp','flags','registers','memory','halted','io'):
                     setattr(self, field, before[field])
+                if isinstance(fault, Wait):
+                    self.events['wait:'+str(fault)] += 1
+                    return self.state(str(fault),retired)
                 self.fault = str(fault)
                 self.events['fault:'+self.fault] += 1
                 return self.state('fault',retired)
             retired += 1
             if self.halted: return self.state('halted',retired)
         return self.state('step_limit',retired)
+
+    def apply(self, action):
+        op = action['op']
+        result = []
+        if op == 'run': return self.run(action['budget'])
+        if op == 'feed':
+            words = action['words']
+            accepted = not self.io['closed'] and len(self.io['input'])+len(words) <= self.io['input_capacity']
+            if accepted: self.io['input'].extend(words)
+            result = [int(accepted)]
+            self.events['host:feed:'+str(accepted)] += 1
+        elif op == 'close': self.io['closed'] = True
+        elif op == 'drain':
+            result = self.io['output'][:]
+            self.io['output'].clear()
+        elif op == 'reset':
+            self.pc, self.sp = action.get('entry',0), self.end
+            self.registers = [0]*9
+            self.flags = [0,False,False]
+            self.halted, self.fault = False,'none'
+        elif op == 'reset_io':
+            self.io['input'].clear(); self.io['output'].clear(); self.io['closed'] = False
+        else: raise ValueError('unknown host action')
+        snapshot = self.state()
+        snapshot['host_result'] = result
+        return snapshot

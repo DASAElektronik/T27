@@ -42,6 +42,7 @@ nav:
       - Governance: guide/governance.md
   - Design:
       - Architecture: design/architecture.md
+      - Experimental ISA v0: design/isa-v0.md
       - Numeric contract: design/numeric-contract.md
       - Cells & Encoding: design/cells.md
       - Non-Infringement Scope: design/ip-scope.md

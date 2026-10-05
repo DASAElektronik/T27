@@ -1,6 +1,14 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Changelog
 
+## Experimental ISA v0 - unreleased
+
+- Add an opt-in CPU model with nine 27-trit registers, 14 canonical instructions,
+  unified word memory, arithmetic flags, precise faults and resumable step budgets.
+- Add independent encoding/arithmetic checks and sum, factorial and division demos.
+- Exercise the experimental module in CI while excluding it from core installation.
+- Document the proposed ISA and the decisions required before freezing it.
+
 ## 0.2.0 review candidate - unreleased
 
 Based on the uploaded T27-Project.zip (CMake 0.1.1), SHA256
@@ -18,7 +26,7 @@ Based on the uploaded T27-Project.zip (CMake 0.1.1), SHA256
 - Remove obsolete integration patches and manually duplicated VS projects.
 - Correct credits, citations and current-scope descriptions; retain inherited license notices.
 
-See docs/migration-0.2.md for all intentional compatibility changes.
+See docs/guide/migration-0.2.md for all intentional compatibility changes.
 
 ## Repository integration
 

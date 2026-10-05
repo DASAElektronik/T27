@@ -14,6 +14,6 @@ jobs:
       - name: Configure actual instrumentation
         env:
           CXX: clang++
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_ENABLE_SANITIZERS=ON -DT27_BUILD_TESTS=ON
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_ENABLE_SANITIZERS=ON -DT27_BUILD_TESTS=ON -DT27_BUILD_EXPERIMENTAL_CPU=ON
       - run: cmake --build build --parallel 2
       - run: ctest --test-dir build --output-on-failure

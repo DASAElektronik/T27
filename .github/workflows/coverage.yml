@@ -11,7 +11,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: sudo apt-get update && sudo apt-get install -y lcov
-      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_TESTS=ON -DT27_ENABLE_COVERAGE=ON
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_TESTS=ON -DT27_BUILD_EXPERIMENTAL_CPU=ON -DT27_ENABLE_COVERAGE=ON
       - run: cmake --build build --target coverage-lcov --parallel 2
       - uses: actions/upload-artifact@v4
         with:

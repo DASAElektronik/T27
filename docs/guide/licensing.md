@@ -1,14 +1,13 @@
-# Licensing
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+# Licensing and provenance
 
-This repository uses **license routing**:
+The public project routes code/HDL to Apache-2.0, hardware to CERN-OHL-P-2.0,
+and documentation/media to CC-BY-4.0. Existing project legal and community files
+remain in the repository.
 
-- **Code / HDL:** Apache-2.0
-- **Hardware:** CERN-OHL-P-2.0
-- **Docs / Media:** CC-BY-4.0
+The integer-core consolidation also retains the original MIT notice from the
+uploaded 2025 core. See `LICENSES/MIT-Core.txt`, `NOTICE` and `LICENSE-ROUTING.txt`
+in the repository. Installed packages include these notices.
 
-See the files in the repo root for details:
-- `LICENSE` (main routing notice)
-- `LICENSE-ROUTING.txt`
-- `NOTICE`
-
-By contributing, you agree that your contributions follow the same routing.
+The patent non-assertion pledge expresses the project's contribution policy.
+It does not establish freedom from third-party patent claims.

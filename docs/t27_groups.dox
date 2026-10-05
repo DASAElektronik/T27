@@ -1,0 +1,7 @@
+/*! \defgroup numerics Numerics (balanced ternary)
+ * Core representations, conversions, and integer operations.
+ */
+/*! \defgroup long_div Long division (balanced ternary)
+ * \ingroup numerics
+ * Exact shifted-divisor division with truncation-toward-zero semantics.
+ */

@@ -1,12 +1,16 @@
-Ternary Computer — License Routing
+T27 - License routing and source provenance
 
-This repository uses a multi-license layout:
+Code and HDL: Apache-2.0. Hardware design: CERN-OHL-P-2.0.
+Documentation and media: CC-BY-4.0. These public-project routes remain unchanged.
+The full Apache text is LICENSE; the other project references are in LICENSES/.
 
-• Code and HDL (e.g., /src, /hdl, /tools): Apache-2.0
-• Hardware design files (e.g., /hardware, /pcb, /mechanics): CERN-OHL-P-2.0
-• Documentation and media (e.g., /docs, /specs, /figures): CC-BY-4.0
+The integer core was consolidated from the uploaded 2025 snapshot, whose full
+MIT copyright and permission notice is preserved in LICENSES/MIT-Core.txt.
+Derived integer source, existing tests and build helpers retain those inherited
+notices in addition to the public project's Apache-2.0 contribution terms.
+New Apache-2.0 files identify their license with an SPDX header. NOTICE records
+this provenance. Installed distributions include LICENSE, NOTICE and LICENSES/.
 
-Files have SPDX headers to indicate their license. See SPDX-EXAMPLES.md for snippets.
-
-The full text of Apache-2.0 is included in LICENSE.
-Canonical references for CERN-OHL-P-2.0 and CC-BY-4.0 are included in LICENSES/.
+The floating-point draft is preserved from master under docs/rfcs/, with its
+original Apache-2.0 source header; it is not installed as a supported core API.
+No hardware design or third-party patent clearance is supplied by this revision.

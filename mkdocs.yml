@@ -2,7 +2,7 @@ site_name: Ternary Computer (T27)
 site_url: https://dasaelektronik.github.io/T27/
 repo_url: https://github.com/DASAElektronik/T27
 repo_name: DASAElektronik/T27
-edit_uri: edit/master/docs/
+edit_uri: edit/main/docs/
 
 theme:
   name: material
@@ -33,18 +33,29 @@ nav:
   - Home: index.md
   - Guide:
       - Quickstart: guide/quickstart.md
+      - Migration to 0.2: guide/migration-0.2.md
+      - Examples: guide/examples.md
+      - Glossary: guide/glossary.md
+      - Credits: guide/credits.md
       - Contributing: guide/contributing.md
       - Licensing: guide/licensing.md
       - Governance: guide/governance.md
   - Design:
       - Architecture: design/architecture.md
+      - Numeric contract: design/numeric-contract.md
       - Cells & Encoding: design/cells.md
       - Non-Infringement Scope: design/ip-scope.md
       - Long Division Algorithm: design/alg-long-div.md
       - Proof (Long Division): design/proof_long_div.md
+  - Floating-point RFCs:
+      - Status and open decisions: rfcs/float-status.md
+      - Ternary27 draft: rfcs/fp-ternary27.md
+      - Ternary6 draft: rfcs/fp-ternary6.md
+  - API reference: api/index.html
   - Reproducibility:
       - Tooling & Versions: repro/tooling.md
       - Tests & CI: repro/tests-ci.md
+      - Project review: repro/review-2026-10-05.md
   - Roadmap: roadmap.md
 
 markdown_extensions:
@@ -65,3 +76,16 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/DASAElektronik/T27/discussions
       name: GitHub Discussions
+
+exclude_docs: |
+  requirements.txt
+  Doxyfile
+  api-main.md
+  t27_groups.dox
+  design/snippets/
+validation:
+  nav:
+    not_found: warn
+    omitted_files: info
+  links:
+    not_found: warn

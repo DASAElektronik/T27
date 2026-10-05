@@ -34,6 +34,7 @@ nav:
   - Guide:
       - Quickstart: guide/quickstart.md
       - Migration to 0.2: guide/migration-0.2.md
+      - ISA v0 assembler: guide/assembler.md
       - Examples: guide/examples.md
       - Glossary: guide/glossary.md
       - Credits: guide/credits.md

@@ -1,0 +1,15 @@
+; SPDX-License-Identifier: Apache-2.0
+; Sum 1 through 10. R8 starts at zero.
+LI R0, 0
+LI R1, 1
+LI R2, 11
+LI R3, 1
+loop:
+    ADD R0, R0, R1
+    ADD R1, R1, R3
+    SUB R4, R1, R2
+    JNZ R4, loop
+STORE [R8 + result], R0
+LOAD R5, [R8 + result]
+HALT
+result: .word 0

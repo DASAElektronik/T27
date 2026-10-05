@@ -1,0 +1,7 @@
+; SPDX-License-Identifier: Apache-2.0
+; Full-word constant loaded from a labeled data word.
+LOAD R0, [R8 + maximum]
+LI R1, 1
+ADD R2, R0, R1
+HALT
+maximum: .word 3812798742493

@@ -1,0 +1,7 @@
+; SPDX-License-Identifier: Apache-2.0
+; Truncating division: R2 = -2, R3 = -1.
+LI R0, -7
+LI R1, 3
+DIV R2, R0, R1
+REM R3, R0, R1
+HALT

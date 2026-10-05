@@ -3,6 +3,9 @@
 
 ## Experimental ISA v0 - unreleased
 
+- Add a two-pass text assembler with labels, `.word`, source diagnostics and a
+  bounded command-line runner; provide four runnable assembly examples.
+
 - Add an opt-in CPU model with nine 27-trit registers, 14 canonical instructions,
   unified word memory, arithmetic flags, precise faults and resumable step budgets.
 - Add independent encoding/arithmetic checks and sum, factorial and division demos.

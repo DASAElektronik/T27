@@ -6,6 +6,7 @@ The current implementation is a **C++20 integer reference**, with arbitrary-leng
 trit vectors and fixed 27-trit words. Version 0.2.0 is an unreleased review candidate.
 
 - [Build and test the core](guide/quickstart.md)
+- [Write and run assembly programs](guide/assembler.md)
 - [Run the experimental ISA v0 emulator](design/isa-v0.md)
 - [Read the numeric contract](design/numeric-contract.md)
 - [Migrate from the 2025 implementation](guide/migration-0.2.md)

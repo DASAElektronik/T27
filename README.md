@@ -55,12 +55,13 @@ and signed-division examples. Its encoding and API remain open design proposals.
 cmake -S . -B build-cpu -DCMAKE_BUILD_TYPE=Debug -DT27_BUILD_EXPERIMENTAL_CPU=ON -DT27_BUILD_TESTS=ON
 cmake --build build-cpu --config Debug --parallel 2
 ctest --test-dir build-cpu -C Debug --output-on-failure
-./build-cpu/t27_cpu_demo
+./build-cpu/t27_run experimental/cpu/programs/sum.t27
 ```
 
-On Visual Studio, the executable is `build-cpu/Debug/t27_cpu_demo.exe`.
+On Visual Studio, the runner is `build-cpu/Debug/t27_run.exe`.
+See the [assembler guide](docs/guide/assembler.md) for syntax, labels and diagnostics.
 The module defaults to OFF and is excluded from the installed integer package.
-It adds two CTest groups and two isolated header checks when enabled.
+It adds four CTest groups (with Python) and three isolated header checks when enabled.
 
 ## Core contract
 

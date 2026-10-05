@@ -1,0 +1,9 @@
+; SPDX-License-Identifier: Apache-2.0
+; Factorial of six: R0 = 720.
+LI R0, 1
+LI R1, 6
+LI R2, 1
+loop: MUL R0, R0, R1
+SUB R1, R1, R2
+JNZ R1, loop
+HALT

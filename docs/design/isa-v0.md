@@ -17,8 +17,9 @@ ctest --test-dir build-cpu -C Debug --output-on-failure
 
 With Visual Studio, run `build-cpu/Debug/t27_cpu_demo.exe`. The demo verifies
 sum(1..10) = 55, factorial(6) = 720, and −7 / 3 = −2 with remainder −1.
-The option defaults to OFF. Enabling it adds `t27_cpu`, `t27_cpu_demo` and, when
-tests are enabled, `t27_cpu_tests` and two isolated header checks.
+The option defaults to OFF. Enabling it adds `t27_cpu`, `t27_cpu_demo` and the `t27_run` assembler/runner, plus tests and
+three isolated header checks when testing is enabled.
+See the [assembler guide](../guide/assembler.md) to run text programs.
 
 ## Machine state and memory
 
@@ -124,8 +125,10 @@ from faults raised by emulated instructions.
 ## Example loop
 
 The following notation illustrates the program in `experimental/cpu/examples/demo.cpp`.
-It is not input to an assembler; the example constructs `Instruction` objects
-and encodes them into memory words.
+The C++ example constructs `Instruction` objects and encodes them into memory words.
+For assembler input, omit the numeric address prefixes below. A label-based version
+is available in `experimental/cpu/programs/sum.t27`, with an additional LOAD to
+verify the stored result.
 
 ```text
 0: LI    R0, 0
@@ -150,7 +153,7 @@ word overflow boundaries, register aliasing, loops, self-modifying code, budgets
 host validation and atomic faults. The existing core oracle remains independent.
 
 Before freezing an ISA, decide register count, opcode allocation, full-word constant
-loading, indirect jumps, stack/call conventions, executable serialization and
-versioning. An assembler, ABI, boot contract, I/O and interrupts are subsequent
-milestones. FPGA work should compare each architectural transition against this
+construction, indirect jumps, stack/call conventions, executable serialization and
+versioning. A text assembler and runner are now implemented; ABI, boot contract, I/O and
+interrupts remain subsequent milestones. FPGA work should compare each architectural transition against this
 model only after the relevant ISA decisions have been accepted.
